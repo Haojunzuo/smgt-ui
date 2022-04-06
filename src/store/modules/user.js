@@ -34,19 +34,19 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      const username = userInfo.username.trim()
+      const userName = userInfo.userName.trim()
       const password = userInfo.password
+      const role = userInfo.role
       const code = userInfo.code
-      const uuid = userInfo.uuid
-      const sysalias=userInfo.sysalias
       return new Promise((resolve, reject) => {
-        login(username, password, code, uuid,sysalias).then(res => {
-          let data = res.data
-          setToken(data.access_token)
-          commit('SET_TOKEN', data.access_token)
-          setExpiresIn(data.expires_in)
-          commit('SET_EXPIRES_IN', data.expires_in)
-          resolve()
+        login(userName, password, code, role).then(res => {
+          if(res.token !== undefined){
+            setToken(res.token)
+            commit('SET_TOKEN', res.token)
+            // setExpiresIn(data.expires_in)
+            // commit('SET_EXPIRES_IN', data.expires_in)
+          }
+          resolve(res)
         }).catch(error => {
           reject(error)
         })
@@ -59,9 +59,9 @@ const user = {
         getInfo().then(res => {
           const user = res.user
           const avatar = user.avatar == "" ? require("@/assets/images/profile.jpg") : user.avatar;
-          if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', res.roles)
-            commit('SET_PERMISSIONS', res.permissions)
+          if (user.role) { // 验证返回的roles是否是一个非空数组
+            commit('SET_ROLES', [user.role])
+            // commit('SET_PERMISSIONS', res.permissions)
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
@@ -91,15 +91,20 @@ const user = {
     // 退出系统
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          commit('SET_PERMISSIONS', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        // logout(state.token).then(() => {
+        //   commit('SET_TOKEN', '')
+        //   commit('SET_ROLES', [])
+        //   commit('SET_PERMISSIONS', [])
+        //   removeToken()
+        //   resolve()
+        // }).catch(error => {
+        //   reject(error)
+        // })
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        commit('SET_PERMISSIONS', [])
+        removeToken()
+        resolve()
       })
     },
 

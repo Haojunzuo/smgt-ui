@@ -1,18 +1,18 @@
 import request from '@/utils/request'
 
 // 登录方法
-export function login(username, password, code, uuid,sysalias) {
+export function login(userName, password, code, role) {
   return request({
-    url: '/auth/login',
+    url: '/user/login',
     method: 'post',
-    data: { username, password, code, uuid,sysalias}
+    data: { userName, password, code, role}
   })
 }
 
 // 注册方法
 export function register(data) {
   return request({
-    url: '/auth/register',
+    url: '/user/register',
     headers: {
       isToken: false
     },
@@ -24,7 +24,7 @@ export function register(data) {
 // 刷新方法
 export function refreshToken() {
   return request({
-    url: '/auth/refresh',
+    url: '/user/refresh',
     method: 'post'
   })
 }
@@ -32,7 +32,7 @@ export function refreshToken() {
 // 获取用户详细信息
 export function getInfo() {
   return request({
-    url: '/system/user/getInfo',
+    url: '/user/getInfo',
     method: 'get'
   })
 }
@@ -40,7 +40,7 @@ export function getInfo() {
 // 退出方法
 export function logout() {
   return request({
-    url: '/auth/logout',
+    url: '/user/logout',
     method: 'delete'
   })
 }
@@ -49,6 +49,13 @@ export function logout() {
 export function getCodeImg() {
   return request({
     url: '/user/getImage',
+    method: 'get'
+  })
+}
+// 获取路由
+export const getRouters = (role) => {
+  return request({
+    url: '/user/getRouters/'+ role,
     method: 'get'
   })
 }

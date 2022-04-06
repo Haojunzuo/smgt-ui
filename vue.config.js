@@ -31,11 +31,11 @@ module.exports = {
     port: port,
     open: true,
     proxy: {
-      [process.env.VUE_APP_BASE_API]: {
+      ['/dev-api']: {
         target: `http://localhost:9201`,
         changeOrigin: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: ''
+          ['^/dev-api']: ''
         }
       }
     },

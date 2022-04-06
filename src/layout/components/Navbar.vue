@@ -8,20 +8,7 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
 
-        <div class="right-menu-item hover-effect">
-          <svg-icon :icon-class="'arrow-undo'" @click="toMain" />
-        </div>
-
-<!--        <i class="el-icon-back right-menu-item" @click="toMain"></i>-->
         <search id="header-search" class="right-menu-item" />
-
-<!--        <el-tooltip content="源码地址" effect="dark" placement="bottom">-->
-<!--          <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />-->
-<!--        </el-tooltip>-->
-
-<!--        <el-tooltip content="文档地址" effect="dark" placement="bottom">-->
-<!--          <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />-->
-<!--        </el-tooltip>-->
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
@@ -70,12 +57,6 @@ export default {
     SizeSelect,
     Search
   },
-  created() {
-    if (window.__MICRO_APP_ENVIRONMENT__) {
-      // 获取基座下发的数据
-      this.microAppData = window.microApp.getData()
-    }
-  },
   computed: {
     ...mapGetters([
       'sidebar',
@@ -113,9 +94,6 @@ export default {
           location.href = '/index';
         })
       }).catch(() => {});
-    },
-    toMain(){
-      this.microAppData.pushState('/')
     }
   }
 }

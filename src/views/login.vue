@@ -1,165 +1,231 @@
 <template>
   <div class="login">
-<!--    <el-card>-->
-<!--      <el-tabs v-model="activeName">-->
-<!--        <el-tab-pane label="学生" name="student" style="width: 33%">-->
-<!--          -->
-<!--        </el-tab-pane>-->
-<!--        <el-tab-pane label="辅导员" name="teacher" style="width: 33%">-->
-<!--          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">-->
-<!--            <h3 class="title">学生跟随系统</h3>-->
-<!--            <el-form-item prop="username">-->
-<!--              <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">-->
-<!--                <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />-->
-<!--              </el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item prop="password">-->
-<!--              <el-input-->
-<!--                v-model="loginForm.password"-->
-<!--                type="password"-->
-<!--                auto-complete="off"-->
-<!--                placeholder="密码"-->
-<!--                @keyup.enter.native="handleLogin"-->
-<!--              >-->
-<!--                <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />-->
-<!--              </el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item prop="code" v-if="captchaOnOff">-->
-<!--              <el-input-->
-<!--                v-model="loginForm.code"-->
-<!--                auto-complete="off"-->
-<!--                placeholder="验证码"-->
-<!--                style="width: 63%"-->
-<!--                @keyup.enter.native="handleLogin"-->
-<!--              >-->
-<!--                <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />-->
-<!--              </el-input>-->
-<!--              <div class="login-code">-->
-<!--                <img :src="codeUrl" @click="getCode" class="login-code-img"/>-->
-<!--              </div>-->
-<!--            </el-form-item>-->
-<!--            <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>-->
-<!--            <el-form-item style="width:100%;">-->
-<!--              <el-button-->
-<!--                :loading="loading"-->
-<!--                size="medium"-->
-<!--                type="primary"-->
-<!--                style="width:100%;"-->
-<!--                @click.native.prevent="handleLogin"-->
-<!--              >-->
-<!--                <span v-if="!loading">登 录</span>-->
-<!--                <span v-else>登 录 中...</span>-->
-<!--              </el-button>-->
-<!--              <div style="float: right;" v-if="register">-->
-<!--                <router-link class="link-type" :to="'/register'">立即注册</router-link>-->
-<!--              </div>-->
-<!--            </el-form-item>-->
-<!--          </el-form>-->
-<!--        </el-tab-pane>-->
-<!--        <el-tab-pane label="教务处" name="rome" style="width: 33%">-->
-<!--          <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">-->
-<!--            <h3 class="title">学生跟随系统</h3>-->
-<!--            <el-form-item prop="username">-->
-<!--              <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">-->
-<!--                <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />-->
-<!--              </el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item prop="password">-->
-<!--              <el-input-->
-<!--                v-model="loginForm.password"-->
-<!--                type="password"-->
-<!--                auto-complete="off"-->
-<!--                placeholder="密码"-->
-<!--                @keyup.enter.native="handleLogin"-->
-<!--              >-->
-<!--                <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />-->
-<!--              </el-input>-->
-<!--            </el-form-item>-->
-<!--            <el-form-item prop="code" v-if="captchaOnOff">-->
-<!--              <el-input-->
-<!--                v-model="loginForm.code"-->
-<!--                auto-complete="off"-->
-<!--                placeholder="验证码"-->
-<!--                style="width: 63%"-->
-<!--                @keyup.enter.native="handleLogin"-->
-<!--              >-->
-<!--                <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />-->
-<!--              </el-input>-->
-<!--              <div class="login-code">-->
-<!--                <img :src="codeUrl" @click="getCode" class="login-code-img"/>-->
-<!--              </div>-->
-<!--            </el-form-item>-->
-<!--            <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>-->
-<!--            <el-form-item style="width:100%;">-->
-<!--              <el-button-->
-<!--                :loading="loading"-->
-<!--                size="medium"-->
-<!--                type="primary"-->
-<!--                style="width:100%;"-->
-<!--                @click.native.prevent="handleLogin"-->
-<!--              >-->
-<!--                <span v-if="!loading">登 录</span>-->
-<!--                <span v-else>登 录 中...</span>-->
-<!--              </el-button>-->
-<!--              <div style="float: right;" v-if="register">-->
-<!--                <router-link class="link-type" :to="'/register'">立即注册</router-link>-->
-<!--              </div>-->
-<!--            </el-form-item>-->
-<!--          </el-form>-->
-<!--        </el-tab-pane>-->
+<!--    <el-tabs v-model="activeName" type="border-card" :stretch="true" @tab-click="tabChange">-->
+<!--      <el-tab-pane label="学生" name="student">-->
+<!--        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">-->
+<!--          <h3 class="title">学生跟随系统</h3>-->
+<!--          <el-form-item prop="username">-->
+<!--            <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">-->
+<!--              <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="password">-->
+<!--            <el-input-->
+<!--              v-model="loginForm.password"-->
+<!--              type="password"-->
+<!--              auto-complete="off"-->
+<!--              placeholder="密码"-->
+<!--              @keyup.enter.native="handleLogin"-->
+<!--            >-->
+<!--              <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="code" v-if="captchaOnOff">-->
+<!--            <el-input-->
+<!--              v-model="loginForm.code"-->
+<!--              auto-complete="off"-->
+<!--              placeholder="验证码"-->
+<!--              style="width: 63%"-->
+<!--              @keyup.enter.native="handleLogin"-->
+<!--            >-->
+<!--              <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--            <div class="login-code">-->
+<!--              <img :src="codeUrl" @click="getCode" class="login-code-img"/>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
+<!--          <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>-->
+<!--          <el-form-item style="width:100%;">-->
+<!--            <el-button-->
+<!--              :loading="loading"-->
+<!--              size="medium"-->
+<!--              type="primary"-->
+<!--              style="width:100%;"-->
+<!--              @click.native.prevent="handleLogin"-->
+<!--            >-->
+<!--              <span v-if="!loading">登 录</span>-->
+<!--              <span v-else>登 录 中...</span>-->
+<!--            </el-button>-->
+<!--            <div style="float: right;" v-if="register">-->
+<!--              <router-link class="link-type" :to="'/register'">立即注册</router-link>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--      </el-tab-pane>-->
+<!--      <el-tab-pane label="辅导员" name="teacher">-->
+<!--        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">-->
+<!--          <h3 class="title">学生跟随系统</h3>-->
+<!--          <el-form-item prop="username">-->
+<!--            <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">-->
+<!--              <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="password">-->
+<!--            <el-input-->
+<!--              v-model="loginForm.password"-->
+<!--              type="password"-->
+<!--              auto-complete="off"-->
+<!--              placeholder="密码"-->
+<!--              @keyup.enter.native="handleLogin"-->
+<!--            >-->
+<!--              <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="code" v-if="captchaOnOff">-->
+<!--            <el-input-->
+<!--              v-model="loginForm.code"-->
+<!--              auto-complete="off"-->
+<!--              placeholder="验证码"-->
+<!--              style="width: 63%"-->
+<!--              @keyup.enter.native="handleLogin"-->
+<!--            >-->
+<!--              <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--            <div class="login-code">-->
+<!--              <img :src="codeUrl" @click="getCode" class="login-code-img"/>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
+<!--          <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>-->
+<!--          <el-form-item style="width:100%;">-->
+<!--            <el-button-->
+<!--              :loading="loading"-->
+<!--              size="medium"-->
+<!--              type="primary"-->
+<!--              style="width:100%;"-->
+<!--              @click.native.prevent="handleLogin"-->
+<!--            >-->
+<!--              <span v-if="!loading">登 录</span>-->
+<!--              <span v-else>登 录 中...</span>-->
+<!--            </el-button>-->
+<!--            <div style="float: right;" v-if="register">-->
+<!--              <router-link class="link-type" :to="'/register'">立即注册</router-link>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--      </el-tab-pane>-->
+<!--      <el-tab-pane label="教务处" name="rome">-->
+<!--        <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">-->
+<!--          <h3 class="title">学生跟随系统</h3>-->
+<!--          <el-form-item prop="username">-->
+<!--            <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">-->
+<!--              <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="password">-->
+<!--            <el-input-->
+<!--              v-model="loginForm.password"-->
+<!--              type="password"-->
+<!--              auto-complete="off"-->
+<!--              placeholder="密码"-->
+<!--              @keyup.enter.native="handleLogin"-->
+<!--            >-->
+<!--              <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item prop="code" v-if="captchaOnOff">-->
+<!--            <el-input-->
+<!--              v-model="loginForm.code"-->
+<!--              auto-complete="off"-->
+<!--              placeholder="验证码"-->
+<!--              style="width: 63%"-->
+<!--              @keyup.enter.native="handleLogin"-->
+<!--            >-->
+<!--              <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />-->
+<!--            </el-input>-->
+<!--            <div class="login-code">-->
+<!--              <img :src="codeUrl" @click="getCode" class="login-code-img"/>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
+<!--          <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>-->
+<!--          <el-form-item style="width:100%;">-->
+<!--            <el-button-->
+<!--              :loading="loading"-->
+<!--              size="medium"-->
+<!--              type="primary"-->
+<!--              :style="buttonStyle"-->
+<!--              @click.native.prevent="handleLogin"-->
+<!--            >-->
+<!--              <span v-if="!loading">登 录</span>-->
+<!--              <span v-else>登 录 中...</span>-->
+<!--            </el-button>-->
+<!--            <div style="float: right;" v-if="register">-->
+<!--              <router-link class="link-type" :to="'/register'">立即注册</router-link>-->
+<!--            </div>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--      </el-tab-pane>-->
 
+<!--    </el-tabs>-->
+    <div class="login-form">
+<!--      <el-tabs v-model="activeName" type="border-card" :stretch="true" @tab-click="tabChange">-->
+<!--        <el-tab-pane label="学生" name="student"/>-->
+<!--        <el-tab-pane label="辅导员" name="teacher"/>-->
+<!--        <el-tab-pane label="教务处" name="rome"/>-->
 <!--      </el-tabs>-->
-
-<!--    </el-card>-->
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">学生跟随系统</h3>
-      <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
-          <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          auto-complete="off"
-          placeholder="密码"
-          @keyup.enter.native="handleLogin"
-        >
-          <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="code" v-if="captchaOnOff">
-        <el-input
-          v-model="loginForm.code"
-          auto-complete="off"
-          placeholder="验证码"
-          style="width: 63%"
-          @keyup.enter.native="handleLogin"
-        >
-          <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
-        </el-input>
-        <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
-        </div>
-      </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
-      <el-form-item style="width:100%;">
-        <el-button
-          :loading="loading"
-          size="medium"
-          type="primary"
-          style="width:100%;"
-          @click.native.prevent="handleLogin"
-        >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
-        </el-button>
-        <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
-        </div>
-      </el-form-item>
-    </el-form>
+      <el-menu
+        :default-active="'1'"
+        class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#ecf2ff"
+        text-color="#333"
+        style="text-align: center;font-size: 14px;"
+      >
+        <el-menu-item index="1" style="width: 33%">学生</el-menu-item>
+        <el-menu-item index="2" style="width: 33%">辅导员</el-menu-item>
+        <el-menu-item index="3" style="width: 33%">教务处</el-menu-item>
+      </el-menu>
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-body">
+        <el-form-item prop="userName">
+          <el-input v-model="loginForm.userName" type="text" auto-complete="off" placeholder="账号">
+            <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            auto-complete="off"
+            placeholder="密码"
+            @keyup.enter.native="handleLogin"
+          >
+            <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="code" v-if="captchaOnOff">
+          <el-input
+            v-model="loginForm.code"
+            auto-complete="off"
+            placeholder="验证码"
+            style="width: 70%"
+            @keyup.enter.native="handleLogin"
+          >
+            <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
+          </el-input>
+          <div class="login-code">
+            <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          </div>
+        </el-form-item>
+        <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+        <el-form-item style="width:100%;">
+          <el-button
+            :loading="loading"
+            size="medium"
+            type="primary"
+            :style = buttonStyle
+            @click.native.prevent="handleLogin"
+          >
+            <span v-if="!loading">登 录</span>
+            <span v-else>登 录 中...</span>
+          </el-button>
+          <div style="float: right;" v-if="register">
+            <router-link class="link-type" :to="'/register'">立即注册</router-link>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+
     <!--  底部  -->
     <div class="el-login-footer">
       <span>Copyright © 2022 哈尔滨工程大学.</span>
@@ -171,22 +237,24 @@
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
+
 export default {
   name: "Login",
   data() {
     return {
-      activeName: "student",
+      buttonStyle: "width:100%;background: #2dd074",
       codeUrl: "",
       cookiePassword: "",
       loginForm: {
-        username: "admin",
+        userName: "admin",
         password: "admin123",
         rememberMe: false,
+        role: 1,
         code: "",
         uuid: ""
       },
       loginRules: {
-        username: [
+        userName: [
           { required: true, trigger: "blur", message: "请输入您的账号" }
         ],
         password: [
@@ -217,7 +285,6 @@ export default {
   methods: {
     getCode() {
       getCodeImg().then(res => {
-        console.log(res)
         this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
         if (this.captchaOnOff) {
           this.codeUrl = "data:image/gif;base64," + res.img;
@@ -226,12 +293,14 @@ export default {
       });
     },
     getCookie() {
-      const username = Cookies.get("username");
+      const userName = Cookies.get("userName");
       const password = Cookies.get("password");
+      const role = Cookies.get("role");
       const rememberMe = Cookies.get('rememberMe')
       this.loginForm = {
-        username: username === undefined ? this.loginForm.username : username,
+        userName: userName === undefined ? this.loginForm.userName : userName,
         password: password === undefined ? this.loginForm.password : decrypt(password),
+        role: role === undefined ? this.loginForm.role : role,
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
     },
@@ -240,16 +309,28 @@ export default {
         if (valid) {
           this.loading = true;
           if (this.loginForm.rememberMe) {
-            Cookies.set("username", this.loginForm.username, { expires: 30 });
+            Cookies.set("userName", this.loginForm.userName, { expires: 30 });
             Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
+            Cookies.set("role", this.loginForm.role, { expires: 30 });
             Cookies.set('rememberMe', this.loginForm.rememberMe, { expires: 30 });
           } else {
-            Cookies.remove("username");
+            Cookies.remove("userName");
             Cookies.remove("password");
+            Cookies.remove("role");
             Cookies.remove('rememberMe');
           }
-          this.$store.dispatch("Login", this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
+          console.log(this.loginForm)
+          this.loading = false;
+          this.$store.dispatch("Login", this.loginForm).then((res) => {
+            if(res.token!==undefined){
+              this.msgSuccess(res.msg)
+              this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
+            }else {
+              this.msgError(res.msg)
+              this.loading = false
+              this.getCode()
+            }
+
           }).catch(() => {
             this.loading = false;
             if (this.captchaOnOff) {
@@ -258,6 +339,17 @@ export default {
           });
         }
       });
+    },
+    handleSelect(data) {
+      this.getCode();
+      this.loginForm.role = parseInt(data)
+      if(data === "1"){
+        this.buttonStyle = "width:100%;background: #2dd074";
+      }else if (data === "2") {
+        this.buttonStyle = "width:100%;background: #ffbe43";
+      } else {
+        this.buttonStyle = "width:100%;background: #4e84f8";
+      }
     }
   }
 };
@@ -273,7 +365,7 @@ export default {
   background-size: cover;
 }
 .title {
-  margin: 0px auto 30px auto;
+  margin: 20px auto 20px auto;
   text-align: center;
   color: #707070;
 }
@@ -282,17 +374,19 @@ export default {
   border-radius: 6px;
   background: #ffffff;
   width: 400px;
-  padding: 25px 25px 5px 25px;
-  .el-input {
-    height: 38px;
-    input {
+  .login-body {
+    padding: 25px 25px 5px 25px;
+    .el-input {
       height: 38px;
+      input {
+        height: 38px;
+      }
     }
-  }
-  .input-icon {
-    height: 39px;
-    width: 14px;
-    margin-left: 2px;
+    .input-icon {
+      height: 39px;
+      width: 14px;
+      margin-left: 2px;
+    }
   }
 }
 .login-tip {
@@ -301,7 +395,7 @@ export default {
   color: #bfbfbf;
 }
 .login-code {
-  width: 33%;
+  width: 25%;
   height: 38px;
   float: right;
   img {

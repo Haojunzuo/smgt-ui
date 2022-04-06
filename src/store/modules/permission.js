@@ -1,10 +1,10 @@
 import { constantRoutes } from '@/router'
-import { getRouters } from '@/api/menu'
+import { getRouters } from '@/api/login'
 import Layout from '@/layout/index'
 import ParentView from '@/components/ParentView';
 import InnerLink from '@/layout/components/InnerLink'
 import Cookies from "js-cookie";
-import {globalData} from "../../main";
+import store from "../index";
 
 const permission = {
   state: {
@@ -39,22 +39,19 @@ const permission = {
     GenerateRoutes({ commit }) {
       return new Promise(resolve => {
         // 向后端请求路由数据
-        getRouters().then(res => {
-          const sdata = JSON.parse(JSON.stringify(res.data))
-          const rdata = JSON.parse(JSON.stringify(res.data))
+        getRouters(store.getters.roles[0]).then(res => {
+          // console.log(res)
+          const sdata = JSON.parse(JSON.stringify(res))
+          const rdata = JSON.parse(JSON.stringify(res))
           const sidebarRoutes = filterAsyncRouter(sdata)
           const rewriteRoutes = filterAsyncRouter(rdata, false, true)
-          // for(let i=0;i<sidebarRoutes.length;i++){
-          //   sidebarRoutes[i].path = '/support' + sidebarRoutes[i].path
-          // }
           rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
           commit('SET_ROUTES', rewriteRoutes)
           commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
-          // globalData.store.commit('SET_SIDEBAR_ROUTERS', constantRoutes.concat(sidebarRoutes))
-          // console.log(constantRoutes.concat(sidebarRoutes))
           commit('SET_DEFAULT_ROUTES', sidebarRoutes)
           commit('SET_TOPBAR_ROUTES', sidebarRoutes)
           resolve(rewriteRoutes)
+          // resolve(res)
         })
       })
     }
@@ -76,7 +73,7 @@ function filterAsyncRouter(asyncRouterMap, lastRouter = false, type = false) {
       } else if (route.component === 'InnerLink') {
         route.component = InnerLink
       } else {
-        route.component = loadView(route.component)
+        route.component = loadView(route.component,store.getters.roles[0])
       }
     }
     if (route.children != null && route.children && route.children.length) {
@@ -113,8 +110,16 @@ function filterChildren(childrenMap, lastRouter = false) {
   return children
 }
 
-export const loadView = (view) => { // 路由懒加载
-  return (resolve) => require([`@/views/${view}`], resolve)
+export const loadView = (view,role) => { // 路由懒加载
+  let roleName = ""
+  if(role === 1){
+    roleName = "student"
+  }else if(role === 2){
+    roleName = "teacher"
+  }else if(role === 3){
+    roleName = "room"
+  }
+  return (resolve) => require([`@/views/${roleName}/${view}`], resolve)
 }
 
 export default permission
