@@ -46,6 +46,7 @@
     "core-js": "3.8.1",
     "dnd.js": "^0.4.10",
     "echarts": "4.9.0",
+    "element-china-area-data": "^5.0.2",
     "element-ui": "2.15.5",
     "file-saver": "2.0.4",
     "fuse.js": "6.4.3",

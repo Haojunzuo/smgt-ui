@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    子系统
+    进出校报备
   </div>
 </template>
 
 <script>
 export default {
-  name: "SubSystem",
+  name: "request",
 };
 </script>

@@ -16,17 +16,17 @@ import { download } from '@/utils/request'
 import './assets/icons' // icon
 import './permission' // permission control
 import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/anga";
-// import Pagination from "@/components/Pagination";
-// // 自定义表格工具组件
-// import RightToolbar from "@/components/RightToolbar"
-// // 富文本组件
-// import Editor from "@/components/Editor"
-// // 文件上传组件
+import Pagination from "@/components/Pagination";
+// 自定义表格工具组件
+import RightToolbar from "@/components/RightToolbar"
+// 富文本组件
+import Editor from "@/components/Editor"
+// 文件上传组件
 // import FileUpload from "@/components/FileUpload"
-// // 图片上传组件
+// 图片上传组件
 // import ImageUpload from "@/components/ImageUpload"
-// // 字典标签组件
-// import DictTag from '@/components/DictTag'
+// 字典标签组件
+import DictTag from '@/components/DictTag'
 // 头部标签组件
 import VueMeta from 'vue-meta'
 
@@ -52,10 +52,11 @@ Vue.prototype.msgInfo = function (msg) {
 }
 
 // 全局组件挂载
-// Vue.component('DictTag', DictTag)
-// Vue.component('Pagination', Pagination)
-// Vue.component('RightToolbar', RightToolbar)
-// Vue.component('Editor', Editor)
+Vue.component('DictTag', DictTag)
+Vue.component('Pagination', Pagination)
+Vue.component('RightToolbar', RightToolbar)
+Vue.component('Editor', Editor)
+
 // Vue.component('FileUpload', FileUpload)
 // Vue.component('ImageUpload', ImageUpload)
 
