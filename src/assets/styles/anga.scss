@@ -167,6 +167,14 @@
 	float: right !important;
 }
 
+.el-card.is-always-shadow {
+ box-shadow: none;
+}
+
+.el-card {
+ border: none;
+}
+
 .el-card__header {
 	padding: 14px 15px 7px;
 	min-height: 40px;
