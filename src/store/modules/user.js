@@ -1,13 +1,13 @@
 import { login, logout, getInfo, refreshToken } from '@/api/login'
 import { getToken, setToken, setExpiresIn, removeToken } from '@/utils/auth'
-
+import { getStudent } from '@/api/student/student'
 const user = {
   state: {
     token: getToken(),
     name: '',
     avatar: '',
     roles: [],
-    permissions: []
+    studentInfo: {}
   },
 
   mutations: {
@@ -26,8 +26,8 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
-    SET_PERMISSIONS: (state, permissions) => {
-      state.permissions = permissions
+    SET_STUDENT_INFO: (state, studentInfo) => {
+      state.studentInfo = studentInfo
     }
   },
 
@@ -43,8 +43,6 @@ const user = {
           if(res.token !== undefined){
             setToken(res.token)
             commit('SET_TOKEN', res.token)
-            // setExpiresIn(data.expires_in)
-            // commit('SET_EXPIRES_IN', data.expires_in)
           }
           resolve(res)
         }).catch(error => {
@@ -61,13 +59,20 @@ const user = {
           const avatar = user.avatar == "" ? require("@/assets/images/profile.jpg") : user.avatar;
           if (user.role) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', [user.role])
-            // commit('SET_PERMISSIONS', res.permissions)
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
           commit('SET_NAME', user.userName)
           console.log(user);
           commit('SET_AVATAR', avatar)
+          if(user.role === 1){
+            getStudent(user.userId).then(response => {
+              console.log(response.data)
+              commit('SET_STUDENT_INFO',response.data)
+            }).catch(error => {
+              console.log('学生信息获取失败！')
+            })
+          }
           resolve(res)
         }).catch(error => {
           reject(error)
@@ -89,22 +94,17 @@ const user = {
     },
 
     // 退出系统
-    LogOut({ commit, state }) {
+    LogOut({ commit}) {
       return new Promise((resolve, reject) => {
-        // logout(state.token).then(() => {
-        //   commit('SET_TOKEN', '')
-        //   commit('SET_ROLES', [])
-        //   commit('SET_PERMISSIONS', [])
-        //   removeToken()
-        //   resolve()
-        // }).catch(error => {
-        //   reject(error)
-        // })
-        commit('SET_TOKEN', '')
-        commit('SET_ROLES', [])
-        commit('SET_PERMISSIONS', [])
-        removeToken()
-        resolve()
+        logout().then(() => {
+          commit('SET_TOKEN', '')
+          commit('SET_ROLES', [])
+          commit('SET_STUDENT_INFO', {})
+          removeToken()
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
       })
     },
 

@@ -367,7 +367,7 @@
 </template>
 
 <script>
-  import { listLeave, getLeave, delLeave, addLeave, updateLeave } from "@/api/student/leave/leave";
+  import { listLeave, getLeave, delLeave, addLeave, updateLeave } from "@/api/student/leave";
   import Vue from 'vue';
   import Vodal from 'vodal';
   import "vodal/common.css";
