@@ -21,10 +21,10 @@ import Pagination from "@/components/Pagination";
 import RightToolbar from "@/components/RightToolbar"
 // 富文本组件
 import Editor from "@/components/Editor"
-// 文件上传组件
-// import FileUpload from "@/components/FileUpload"
-// 图片上传组件
-// import ImageUpload from "@/components/ImageUpload"
+//文件上传组件
+import FileUpload from "@/components/FileUpload"
+//图片上传组件
+import ImageUpload from "@/components/ImageUpload"
 // 字典标签组件
 import DictTag from '@/components/DictTag'
 // 头部标签组件
@@ -57,8 +57,8 @@ Vue.component('Pagination', Pagination)
 Vue.component('RightToolbar', RightToolbar)
 Vue.component('Editor', Editor)
 
-// Vue.component('FileUpload', FileUpload)
-// Vue.component('ImageUpload', ImageUpload)
+Vue.component('FileUpload', FileUpload)
+Vue.component('ImageUpload', ImageUpload)
 
 Vue.use(directive)
 Vue.use(VueMeta)

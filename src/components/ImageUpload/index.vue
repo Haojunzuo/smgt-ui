@@ -1,6 +1,6 @@
 <template>
   <div class="component-upload-image">
-<!--    {{fileList}}-->
+    <!--    {{fileList}}-->
     <el-upload
       :action="uploadImgUrl"
       :data="data"
@@ -45,181 +45,177 @@
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
-import { delFile } from "@/api/system/file";
+  import { getToken } from "@/utils/auth";
+  import { delFile, getName} from "@/api/file";
 
-export default {
-  props: {
-    data: {
-      type: Object,
-      default: {}
-    },
-    value: [String, Object, Array],
-    // 图片数量限制
-    limit: {
-      type: Number,
-      default: 5,
-    },
-    // 大小限制(MB)
-    fileSize: {
-       type: Number,
-      default: 50,
-    },
-    // 文件类型, 例如['png', 'jpg', 'jpeg']
-    fileType: {
-      type: Array,
-      default: () => ["png", "jpg", "jpeg"],
-    },
-    // 是否显示提示
-    isShowTip: {
-      type: Boolean,
-      default: true
-    }
-  },
-  data() {
-    return {
-      dialogImageUrl: "",
-      dialogVisible: false,
-      hideUpload: false,
-      uploadImgUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
-      headers: {
-        Authorization: "Bearer " + getToken(),
+  export default {
+    props: {
+      data: {
+        type: Object,
+        default: {}
       },
-      fileList: [],
-      headUrl: "http://localhost:9000/"
-    };
-  },
-  watch: {
-    value: {
-      handler(val) {
-        if (val) {
-          // 首先将值转为数组
-          const list = Array.isArray(val) ? val : this.value.split(',');
-          // 然后将数组转为对象数组
-          this.fileList = list.map(item => {
-            if (typeof item === "string") {
-              item = { name: item, url: this.headUrl+this.data.bucket+"/"+item };
-            }
-            return item;
+      value: [String, Object, Array],
+      // 图片数量限制
+      limit: {
+        type: Number,
+        default: 5,
+      },
+      // 大小限制(MB)
+      fileSize: {
+        type: Number,
+        default: 50,
+      },
+      // 文件类型, 例如['png', 'jpg', 'jpeg']
+      fileType: {
+        type: Array,
+        default: () => ["png", "jpg", "jpeg"],
+      },
+      // 是否显示提示
+      isShowTip: {
+        type: Boolean,
+        default: true
+      }
+    },
+    data() {
+      return {
+        dialogImageUrl: "",
+        dialogVisible: false,
+        hideUpload: false,
+        uploadImgUrl: process.env.VUE_APP_BASE_API + "/file/upload", // 上传的图片服务器地址
+        headers: {
+          Authorization: "Bearer " + getToken(),
+        },
+        fileList: [],
+        headUrl: "http://150.158.10.136:9000/"
+      };
+    },
+    created() {
+      if(this.value){
+        let temp = 1;
+        // 首先将值转为数组
+        const list = Array.isArray(this.value) ? this.value : this.value.split(',');
+        this.fileList = []
+        for(let i=0;i<list.length;i++){
+          getName({bucketName:this.data.bucket,fileName:list[i]}).then(res=>{
+            let item = {name: res.data.description, url: this.headUrl+this.data.bucket+"/"+list[i], id: list[i]}
+            this.fileList.push(item)
+          })
+        }
+      }else {
+        this.fileList = [];
+        return [];
+      }
+    },
+    computed: {
+      // 是否显示提示
+      showTip() {
+        return this.isShowTip && (this.fileType || this.fileSize);
+      },
+    },
+    methods: {
+      // 删除图片
+      handleRemove(file, fileList) {
+        delFile([this.data.bucket+"_"+file.id]).then(res=>{
+          const findex = this.fileList.map(f => f.name).indexOf(file.name);
+          this.fileList.splice(findex, 1);
+          this.$emit("input", this.listToString(this.fileList));
+        })
+      },
+      // 上传成功回调
+      async handleUploadSuccess(res, file) {
+        await setTimeout(() => {
+          let temp = 1;
+          let date = new Date().getTime() + temp++;
+          this.fileList.push({ name: file.name, url: this.headUrl+this.data.bucket+"/"+res.msg, id: res.msg, uid: date});
+          this.$emit("input", this.listToString(this.fileList));
+        }, 500);
+        this.loading.close();
+      },
+      // 上传前loading加载
+      handleBeforeUpload(file) {
+        let isImg = false;
+        if (this.fileType.length) {
+          let fileExtension = "";
+          if (file.name.lastIndexOf(".") > -1) {
+            fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
+          }
+          isImg = this.fileType.some(type => {
+            if (file.type.indexOf(type) > -1) return true;
+            if (fileExtension && fileExtension.indexOf(type) > -1) return true;
+            return false;
           });
         } else {
-          this.fileList = [];
-          return [];
+          isImg = file.type.indexOf("image") > -1;
         }
-      },
-      deep: true,
-      immediate: true
-    }
-  },
-  computed: {
-    // 是否显示提示
-    showTip() {
-      return this.isShowTip && (this.fileType || this.fileSize);
-    },
-  },
-  methods: {
-    // 删除图片
-    handleRemove(file, fileList) {
-      delFile([this.data.bucket+"_"+file.name]).then(res=>{
-        const findex = this.fileList.map(f => f.name).indexOf(file.name);
-        this.fileList.splice(findex, 1);
-        this.$emit("input", this.listToString(this.fileList));
-      })
-    },
-    // 上传成功回调
-    handleUploadSuccess(res) {
-      setTimeout(() => {
-        this.fileList.push({ name: res.msg, url: this.headUrl + this.data.bucket+"/"+res.msg });
-        this.$emit("input", this.listToString(this.fileList));
-      }, 300);
-      this.loading.close();
-    },
-    // 上传前loading加载
-    handleBeforeUpload(file) {
-      let isImg = false;
-      if (this.fileType.length) {
-        let fileExtension = "";
-        if (file.name.lastIndexOf(".") > -1) {
-          fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
-        }
-        isImg = this.fileType.some(type => {
-          if (file.type.indexOf(type) > -1) return true;
-          if (fileExtension && fileExtension.indexOf(type) > -1) return true;
+
+        if (!isImg) {
+          this.$message.error(
+            `文件格式不正确, 请上传${this.fileType.join("/")}图片格式文件!`
+          );
           return false;
+        }
+        if (this.fileSize) {
+          const isLt = file.size / 1024 / 1024 < this.fileSize;
+          if (!isLt) {
+            this.$message.error(`上传头像图片大小不能超过 ${this.fileSize} MB!`);
+            return false;
+          }
+        }
+        this.loading = this.$loading({
+          lock: true,
+          text: "上传中",
+          background: "rgba(0, 0, 0, 0.7)",
         });
-      } else {
-        isImg = file.type.indexOf("image") > -1;
-      }
-
-      if (!isImg) {
-        this.$message.error(
-          `文件格式不正确, 请上传${this.fileType.join("/")}图片格式文件!`
-        );
-        return false;
-      }
-      if (this.fileSize) {
-        const isLt = file.size / 1024 / 1024 < this.fileSize;
-        if (!isLt) {
-          this.$message.error(`上传头像图片大小不能超过 ${this.fileSize} MB!`);
-          return false;
+      },
+      // 文件个数超出
+      handleExceed() {
+        this.$message.error(`上传文件数量不能超过 ${this.limit} 个!`);
+      },
+      // 上传失败
+      handleUploadError() {
+        this.$message({
+          type: "error",
+          message: "上传失败",
+        });
+        this.loading.close();
+      },
+      // 预览
+      handlePictureCardPreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+        // console.log(file)
+        // let a = document.createElement('a');
+        // let event = new MouseEvent('click');
+        // a.download = file.name;
+        // a.href = file.url;
+        // a.dispatchEvent(event);
+      },
+      // 对象转成指定字符串分隔
+      listToString(list, separator) {
+        let strs = "";
+        separator = separator || ",";
+        for (let i in list) {
+          strs += list[i].id + separator;
         }
+        return strs !== '' ? strs.substr(0, strs.length - 1) : '';
       }
-      this.loading = this.$loading({
-        lock: true,
-        text: "上传中",
-        background: "rgba(0, 0, 0, 0.7)",
-      });
-    },
-    // 文件个数超出
-    handleExceed() {
-      this.$message.error(`上传文件数量不能超过 ${this.limit} 个!`);
-    },
-    // 上传失败
-    handleUploadError() {
-      this.$message({
-        type: "error",
-        message: "上传失败",
-      });
-      this.loading.close();
-    },
-    // 预览
-    handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-      // console.log(file)
-      // let a = document.createElement('a');
-      // let event = new MouseEvent('click');
-      // a.download = file.name;
-      // a.href = file.url;
-      // a.dispatchEvent(event);
-
-    },
-    // 对象转成指定字符串分隔
-    listToString(list, separator) {
-      let strs = "";
-      separator = separator || ",";
-      for (let i in list) {
-        strs += list[i].name + separator;
-      }
-      return strs != '' ? strs.substr(0, strs.length - 1) : '';
     }
-  }
-};
+  };
 </script>
 <style scoped lang="scss">
-// .el-upload--picture-card 控制加号部分
-::v-deep.hide .el-upload--picture-card {
+  // .el-upload--picture-card 控制加号部分
+  ::v-deep.hide .el-upload--picture-card {
     display: none;
-}
-// 去掉动画效果
-::v-deep .el-list-enter-active,
-::v-deep .el-list-leave-active {
+  }
+  // 去掉动画效果
+  ::v-deep .el-list-enter-active,
+  ::v-deep .el-list-leave-active {
     transition: all 0s;
-}
+  }
 
-::v-deep .el-list-enter, .el-list-leave-active {
+  ::v-deep .el-list-enter, .el-list-leave-active {
     opacity: 0;
     transform: translateY(0);
-}
+  }
 </style>
 

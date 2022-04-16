@@ -92,7 +92,7 @@
       <el-table-column label="报备时间" align="center" prop="startTime">
         <template slot-scope="scope">
 <!--          <span>{{parseTime(scope.row.startTime,'yyyy-MM-dd hh:mm')+'-'+parseTime(scope.row.endTime,'yyyy-MM-dd hh:mm')}}</span>-->
-          <span>{{scope.row.startTime+'-'+scope.row.endTime}}</span>
+          <span>{{scope.row.startTime+' 至 '+scope.row.endTime}}</span>
         </template>
       </el-table-column>
       <el-table-column label="目的地点" align="center" prop="location">
@@ -102,8 +102,8 @@
       </el-table-column>
       <el-table-column label="审批状态" align="center" prop="status" >
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-loading" v-if="scope.row.status === 0" size="medium" plain @click="getDialogData(scope.row)">审批中...</el-button>
-          <el-button type="success" icon="el-icon-medal" v-else-if="scope.row.status === 1" size="medium" plain @click="getDialogData(scope.row)">审批通过</el-button>
+          <el-button type="primary" icon="el-icon-loading" v-if="scope.row.status === 1" size="medium" plain @click="getDialogData(scope.row)">审批中...</el-button>
+          <el-button type="success" icon="el-icon-medal" v-else-if="scope.row.status === 3" size="medium" plain @click="getDialogData(scope.row)">审批通过</el-button>
           <el-button type="danger" icon="el-icon-warning" v-else size="medium" plain @click="getDialogData(scope.row)">审批拒绝</el-button>
 <!--          <span v-else>{{statusString(scope.row.status)}}</span>-->
         </template>
@@ -118,7 +118,7 @@
           <span>{{scope.row.result === null ? '无' : scope.row.result}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="150">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -302,14 +302,14 @@
             <i class="el-icon-office-building"></i>
             报备时间
           </template>
-          {{dialogData.startTime+'至'+dialogData.endTime}}
+          {{dialogData.startTime+' 至 '+dialogData.endTime}}
         </el-descriptions-item>
         <el-descriptions-item span="3">
           <template slot="label" >
             <i class="el-icon-location-outline"></i>
             目的地
           </template>
-          {{getCodeToText(dialogData.location)}}
+          {{getCodeToText(dialogData.location)+'-'+dialogData.detailLocation}}
         </el-descriptions-item>
         <el-descriptions-item span="3">
           <template slot="label">
@@ -321,13 +321,13 @@
       </el-descriptions>
       <div style="margin: 20px 0">
         <div style="font-size: 16px;font-weight: bold;padding-bottom: 20px">审批状态</div>
-        <el-steps :space="600" :active="dialogData.status === 0? 1:3" finish-status="success" :align-center="true" :process-status="'finish'" simple>
+        <el-steps :space="600" :active="dialogData.status === 1? 1:3" finish-status="success" :align-center="true" :process-status="'finish'" simple>
           <el-step title="提交信息"></el-step>
           <el-step title="审批中"></el-step>
           <el-step title="审批完成"></el-step>
         </el-steps>
       </div>
-      <el-descriptions  title="审批结果" :column="3" :size="'medium'" border class="margin-top" v-if="dialogData.status!==0">
+      <el-descriptions  title="审批结果" :column="3" :size="'medium'" border class="margin-top" v-if="dialogData.status!==1">
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-user"></i>
@@ -419,6 +419,7 @@
         queryParams: {
           pageNum: 1,
           pageSize: 10,
+          orderBy: 'id asc',
           status: null,
           type: null,
           studentId: 1
@@ -443,6 +444,9 @@
           location: [
             { required: true, message: '请选择外出目的地'}
           ],
+          detailLocation: [
+            { required: true, message: '请填写详细地址'}
+          ],
           reason: [
             { required: true, message: '请填写报备详细信息'}
           ],
@@ -454,9 +458,9 @@
         activeName: 'basic',
         options: regionData,
         statusOptions: [
-          {label:'审批中',value:0},
-          {label:'审批拒绝',value:-1},
-          {label:'审批通过',value:1}
+          {label:'审批中',value:1},
+          {label:'审批拒绝',value:4},
+          {label:'审批通过',value:3}
         ],
         typeOptions: [
           {label:'公假',value:1},
@@ -513,6 +517,7 @@
       /** 查询报备类别列表 */
       getList() {
         this.loading = true;
+        console.log(this.queryParams)
         listLeave(this.queryParams).then(response => {
           console.log(response)
           this.leaveList = response.rows;
@@ -551,6 +556,7 @@
         this.queryParams = {
           pageNum: 1,
           pageSize: 10,
+          orderBy: 'id desc',
           status: null,
           type: null,
           studentId: 1
@@ -597,7 +603,7 @@
                 this.getList();
               });
             } else {
-                this.form.status = 0
+                this.form.status = 1
                 addLeave(this.form).then(response => {
                 this.msgSuccess("新增成功");
                 this.open = false;
