@@ -35,7 +35,7 @@ export default {
   },
   data() {
     return {
-      title: '安+后台支撑系统',
+      title: '学生跟随系统',
       logo: logoImg
     }
   }
