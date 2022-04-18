@@ -92,12 +92,6 @@
           :id="item.i"
           @deletePanelItemEvent="deletePanelItem"
         ></often-app>
-        <document
-          v-show='false'
-          v-if="item.name === '待办公文'"
-          :id="item.i"
-          @deletePanelItemEvent="deletePanelItem"
-        ></document>
         <quick-operation
           v-show='false'
           v-if="item.name === '快捷操作'"
@@ -105,11 +99,6 @@
           @deletePanelItemEvent="deletePanelItem"
         ></quick-operation>
 
-        <often-apply
-          v-if="item.name === '常用流程'"
-          :id="item.i"
-          @deletePanelItemEvent="deletePanelItem"
-        ></often-apply>
         <today-work
           v-if="item.name === '我的日程'"
           :id="item.i"
@@ -120,26 +109,11 @@
           :id="item.i"
           @deletePanelItemEvent="deletePanelItem"
         ></remind>
-        <meeting
-          v-if="item.name === '我的会议'"
-          :id="item.i"
-          @deletePanelItemEvent="deletePanelItem"
-        ></meeting>
         <my-task
           v-if="item.name === '我的任务'"
           :id="item.i"
           @deletePanelItemEvent="deletePanelItem"
         ></my-task>
-        <process
-          v-if="item.name === '待办流程'"
-          :id="item.i"
-          @deletePanelItemEvent="deletePanelItem"
-        ></process>
-        <my-document
-          v-if="item.name === '督办公文'"
-          :id="item.i"
-          @deletePanelItemEvent="deletePanelItem"
-        ></my-document>
       </grid-item>
     </grid-layout>
   </div>

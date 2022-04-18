@@ -22,10 +22,6 @@
         :key="item.i"
       >
         <notice v-if="item.name === '公告栏'" :panelSetIcon="true"></notice>
-        <document
-          v-if="item.name === '待办公文'"
-          :panelSetIcon="true"
-        ></document>
         <quick-operation
           v-if="item.name === '快捷操作'"
           :panelSetIcon="true"
@@ -34,10 +30,6 @@
           v-if="item.name === '常用应用'"
           :panelSetIcon="true"
         ></often-app>
-        <often-apply
-          v-if="item.name === '常用流程'"
-          :panelSetIcon="true"
-        ></often-apply>
         <today-work
           v-if="item.name === '我的日程'"
           :panelSetIcon="true"
@@ -52,13 +44,7 @@
           :panelSetIcon="true"
         ></wait-matter>
         <remind v-if="item.name === '督办提醒'" :panelSetIcon="true"></remind>
-        <meeting v-if="item.name === '我的会议'" :panelSetIcon="true"></meeting>
         <my-task v-if="item.name === '我的任务'" :panelSetIcon="true"></my-task>
-        <process v-if="item.name === '待办流程'" :panelSetIcon="true"></process>
-        <my-document
-          v-if="item.name === '督办公文'"
-          :panelSetIcon="true"
-        ></my-document>
       </grid-item>
     </grid-layout>
   </div>
@@ -138,12 +124,4 @@ export default {
 </script>
 
 <style>
-.el-breadcrumb {
-  margin-bottom: 15px;
-}
-
-.el-table {
-  margin-top: 15px;
-  font-size: 12px;
-}
 </style>

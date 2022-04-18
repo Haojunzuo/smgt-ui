@@ -2,7 +2,7 @@
   <el-card>
     <!-- 标题 -->
     <div slot="header">
-      <span class="el-card-title">常用应用</span>
+      <span class="el-card-title">课程表</span>
       <i
         v-show="!isPanelSetIcon"
         class="el-icon-close"
@@ -16,64 +16,6 @@
       ></i>
     </div>
     <!-- 主体区域 -->
-    <div>
-    <div slot="header">
-      <span class="el-card-subtitle">生产管理</span>
-    </div>
-    <div class="often-app-box">
-      <div class="often-app app-1">
-        <i class="iconfont icon-solution"></i>
-        <span class="app-title">商品类别管理</span>
-      </div>
-      <div class="often-app app-2">
-        <i class="iconfont icon-calendar-check"></i>
-        <span class="app-title">商品管理</span>
-      </div>
-      <div class="often-app app-3">
-        <i class="iconfont icon-meeting"></i>
-        <span class="app-title">项目管理</span>
-      </div>
-      <div class="often-app app-4">
-        <i class="iconfont icon-snippets"></i>
-        <span class="app-title">产品结构清单</span>
-      </div>
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">计量单位</span>
-      </div>
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">工序管理</span>
-      </div>
-    </div>
-    </div>
-    <div>
-      <div slot="header">
-        <span class="el-card-subtitle">人力资源管理</span>
-      </div>
-      <div class="often-app-box">
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">员工管理</span>
-      </div>
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">班组管理</span>
-      </div>
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">员工离职</span>
-      </div>
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">员工入职</span>
-      </div>
-      <div class="often-app app-5">
-        <i class="iconfont icon-cloud-server"></i>
-        <span class="app-title">员工请假</span>
-      </div>
-        </div>
-    </div>
   </el-card>
 </template>
 
