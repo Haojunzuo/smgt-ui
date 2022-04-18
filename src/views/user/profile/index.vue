@@ -82,9 +82,8 @@ export default {
   methods: {
     getUser() {
       getInfo().then(response => {
-        console.log(response.user)
-        this.user = response.user;
-        this.user.avatar === "" ? require("@/assets/images/profile.jpg") : this.user.avatar;
+        this.user = response.user
+        this.$set(this.user,'avatar',response.user.avatar === "" ? require("@/assets/images/profile.jpg") : this.user.avatar)
         if(this.user.role === 1){
           getStudent(this.user.userId).then(res=>{
             this.dept = res.data.collegeInfo.collegename
