@@ -117,7 +117,7 @@ export const loadView = (view,role) => { // 路由懒加载
   }else if(role === 2){
     roleName = "teacher"
   }else if(role === 3){
-    roleName = "room"
+    roleName = "admin"
   }
   return (resolve) => require([`@/views/${roleName}/${view}`], resolve)
 }
