@@ -7,6 +7,7 @@ import './assets/styles/element-variables.scss'
 
 import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/anga.scss' // anga css
+import '@/assets/fonts/iconfont.css'
 import App from './App'
 import store from './store'
 import router from './router'

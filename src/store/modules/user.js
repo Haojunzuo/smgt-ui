@@ -4,7 +4,7 @@ import { getStudent } from '@/api/student/student'
 const user = {
   state: {
     token: getToken(),
-    name: '',
+    nickName: '',
     avatar: '',
     roles: [],
     studentInfo: {}
@@ -17,8 +17,8 @@ const user = {
     SET_EXPIRES_IN: (state, time) => {
       state.expires_in = time
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_NICK_NAME: (state, nickName) => {
+      state.nickName = nickName
     },
     SET_AVATAR: (state, avatar) => {
       state.avatar = avatar
@@ -62,7 +62,7 @@ const user = {
           } else {
             commit('SET_ROLES', ['ROLE_DEFAULT'])
           }
-          commit('SET_NAME', user.userName)
+          commit('SET_NICK_NAME', user.nickName)
           console.log(user);
           commit('SET_AVATAR', avatar)
           if(user.role === 1){

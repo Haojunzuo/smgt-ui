@@ -65,9 +65,23 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        component: (resolve) => require(['@/views'], resolve),
+        component: (resolve) => require(['@/views/home/Check'], resolve),
         name: 'Index',
         meta: { title: '首页', icon: 'dashboard', affix: true }
+      },
+    ]
+  },
+  {
+    path: '/edit',
+    component: Layout,
+    hidden: true,
+    redirect: 'edit',
+    children: [
+      {
+        path: '',
+        component: (resolve) => require(['@/views/home/Edit'], resolve),
+        name: 'edit',
+        meta: { title: '桌面管理', icon: 'dashboard' }
       }
     ]
   },
