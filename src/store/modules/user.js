@@ -56,7 +56,8 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           const user = res.user
-          const avatar = user.avatar == "" ? require("@/assets/images/profile.jpg") : user.avatar;
+          const avatar = user.avatar === "" ? require("@/assets/images/profile.jpg") : user.avatar;
+          user.avatar = avatar
           if (user.role) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', [user.role])
           } else {
@@ -68,6 +69,7 @@ const user = {
           if(user.role === 1){
             getStudent(user.userId).then(response => {
               console.log(response.data)
+              response.data.user = user
               commit('SET_STUDENT_INFO',response.data)
             }).catch(error => {
               console.log('学生信息获取失败！')
