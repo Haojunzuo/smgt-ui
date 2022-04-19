@@ -101,7 +101,7 @@
     <el-table v-loading="loading" :data="studentList" @selection-change="handleSelectionChange" >
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column label="学号" align="center" prop="studentNo"/>
-      <el-table-column label="姓名" align="center" prop="userName"/>
+      <el-table-column label="姓名" align="center" prop="nickName"/>
       <el-table-column label="性别" align="center" prop="sex">
         <template slot-scope="scope">
           <span>{{ scope.row.sex==='0'?'男':'女' }}</span>
@@ -135,8 +135,8 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-          >修改
+            @click="handleDetail(scope.row)"
+          >详情
           </el-button>
           <el-button
             size="mini"
@@ -157,13 +157,40 @@
       @pagination="getList"
     />
 
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url"
+        :disabled="upload.isUploading"
+        :on-progress="handleFileUploadProgress"
+        :on-success="handleFileSuccess"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">
+          将文件拖到此处，或
+          <em>点击上传</em>
+        </div>
+        <div class="el-upload__tip" style="color:red" slot="tip">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitImportCourse">确 定</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
 import { listCourse } from '@/api/admin/course/course'
-import { listStudent } from'@/api/student/student'
+import { listStudent, delStudent } from'@/api/student/student'
 import { listCollege, } from '@/api/admin/course/schedule'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'SubSystem',
@@ -496,7 +523,21 @@ export default {
         isfix: '1'
       },
       rules: {
-      }
+      },
+      upload: {
+        // 是否显示弹出层（用户导入）
+        open: false,
+        // 弹出层标题（用户导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 是否更新已经存在的用户数据
+        updateSupport: 0,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/student/importStudent"
+      },
     }
   },
   created() {
@@ -516,7 +557,6 @@ export default {
       this.loading = true
       listStudent(this.queryParams).then(response => {
         this.studentList = response.rows
-        console.log(this.studentList)
         this.total = response.total
         this.loading = false
       })
@@ -538,42 +578,48 @@ export default {
       this.drawer = true
     },
     handleUpdate(row) {
-      // this.reset()
-      // const id = row.id || this.ids
-      // getClassTask(id).then(response => {
-      //   console.log(response)
-      //   this.form = response.data
-      //   this.title = '修改课程计划'
-      //   this.drawer = true
-      // })
+      const id = row.id
+      this.$router.push({
+        path:'/enrollment/detail',
+        query:{
+          id:id,
+        }
+      })
+
+    },
+    handleDetail(row){
+      const studentId = row.id
+      this.$router.push({
+        path:'/enroll/'+studentId,
+        // query:{
+        //   id:id,
+        // }
+      })
     },
     handleDelete(row) {
-      // const id = row.id || this.ids
-      // this.$confirm('是否确定课程计划编号为' + id + '的数据项?', '警告', {
-      //   confirmButtonClass: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(function() {
-      //   return delClassTask(id)
-      // }).then(() => {
-      //   this.getList()
-      //   this.msgSuccess('删除成功')
-      // }).catch(() => {
-      // })
+      const id = row.id || this.ids
+      this.$confirm('是否确定删除编号为' + id + '的学生?', '警告', {
+        confirmButtonClass: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        console.log(id)
+        return delStudent(id)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      }).catch(() => {
+      })
     },
 
     handleExport() {
-      this.download('/classTask/exportClassTask', {
+      this.download('/student/exportStudent', {
         ...this.queryParams
-      }, 'classTask.xlsx')
+      }, 'student.xlsx')
     },
     handleImport() {
       this.upload.title = '导入'
       this.upload.open = true
-    },
-    handleClose(done) {
-      this.form = {}
-      done()
     },
     // 表单重置
     reset() {
@@ -611,10 +657,6 @@ export default {
         }
       })
     },
-    cancel() {
-      this.drawer = false
-      this.reset()
-    },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
@@ -637,9 +679,9 @@ export default {
     submitImportCourse() {
       this.$refs.upload.submit()
     },
+
     getCollegeList() {
       listCollege(this.queryCollege).then(response => {
-        console.log(response.rows)
         this.collegeList = response.rows
       })
     },

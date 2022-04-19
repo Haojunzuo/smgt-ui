@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询请假 列表
+// 查询学生信息 列表
 export function listStudent(query) {
   return request({
     url: '/student/list',
@@ -9,7 +9,7 @@ export function listStudent(query) {
   })
 }
 
-// 查询请假 详细
+// 查询学生信息 详细
 export function getStudent(id) {
   return request({
     url: '/student/' + id,
@@ -17,7 +17,7 @@ export function getStudent(id) {
   })
 }
 
-// 新增请假
+// 新增学生信息
 export function addStudent(data) {
   return request({
     url: '/student',
@@ -26,7 +26,7 @@ export function addStudent(data) {
   })
 }
 
-// 修改请假
+// 修改学生信息
 export function updateStudent(data) {
   return request({
     url: '/student',
@@ -35,12 +35,16 @@ export function updateStudent(data) {
   })
 }
 
-// 删除请假
+// 删除学生信息
 export function delStudent(id) {
   return request({
     url: '/student/' + id,
     method: 'delete',
   })
+}
+
+export function importStudent() {
+
 }
 
 
