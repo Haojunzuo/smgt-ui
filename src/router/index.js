@@ -99,6 +99,26 @@ export const constantRoutes = [
       }
     ]
   },
+
+  {
+    path: '/enroll',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: ':studentId',
+        component: (resolve) => require(['@/views/admin/enrollment/enrollmentInfo/detail'], resolve),
+        name: 'Detail',
+        meta: { title: '学籍详情', icon: 'user' },
+        // props($route){
+        //   return {id:$route.query.id}
+        // }
+      }
+    ]
+  },
+
+
   // {
   //   path: '/system/user-auth',
   //   component: Layout,
