@@ -503,6 +503,7 @@ export default {
     resetQuery() {
       this.resetForm('queryForm')
       this.queryParams.collegeno = null
+      this.queryParams.classno = null
       this.handleQuery()
     },
     handleQuery() {
