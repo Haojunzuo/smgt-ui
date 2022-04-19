@@ -53,8 +53,8 @@
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="通知公告" name="second">配置管理</el-tab-pane>
-      <el-tab-pane label="OA速递" name="third">角色管理</el-tab-pane>
+      <el-tab-pane label="通知公告" name="second">通知公告</el-tab-pane>
+      <el-tab-pane label="考务公告" name="third">考务公告</el-tab-pane>
     </el-tabs>
   </el-card>
 </template>

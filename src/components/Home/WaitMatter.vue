@@ -18,21 +18,21 @@
         <div class="right-box-item">
           <i class="iconfont icon-gongwen right-box-icon-1"></i>
           <div class="item-box">
-            <span>待办公文</span>
+            <span>待提交</span>
             <span>10</span>
           </div>
         </div>
         <div class="right-box-item">
           <i class="iconfont icon-apartment right-box-icon-2"></i>
           <div class="item-box">
-            <span>待办流程</span>
+            <span>待确认</span>
             <span>10</span>
           </div>
         </div>
         <div class="right-box-item">
           <i class="iconfont icon-snippets right-box-icon-3"></i>
           <div class="item-box">
-            <span>待办执行任务</span>
+            <span>待查看</span>
             <span>10</span>
           </div>
         </div>

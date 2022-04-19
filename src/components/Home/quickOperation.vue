@@ -19,19 +19,19 @@
     <div class="often-control-box">
       <div class="often-control-item">
         <i class="iconfont icon-calendar-check"></i>
-        <span>新建日志</span>
+        <span>报备申请</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-snippets"></i>
-        <span>新建任务</span>
+        <span>进校申请</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-meeting"></i>
-        <span>新建会议</span>
+        <span>选课</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-bell"></i>
-        <span>新建公告</span>
+        <span>学籍确认</span>
       </div>
 <!--      <div class="often-control-item">-->
 <!--        <i class="iconfont icon-textin"></i>-->
