@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    角色管理
+    成绩录入
   </div>
 </template>
 
