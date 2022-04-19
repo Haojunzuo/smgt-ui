@@ -80,11 +80,9 @@
 import { listCourse } from '@/api/admin/course/course'
 import { getCoursePlan, listClass, listCollege, listTeacher } from '@/api/admin/course/schedule'
 
-import Select from '@/views/student/study/select'
 
 export default {
   name: "SubSystem",
-  components: { Select },
   data(){
     return {
       coursePlan:[],

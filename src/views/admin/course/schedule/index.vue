@@ -312,11 +312,9 @@ import {
   schedule
 } from '@/api/admin/course/schedule'
 import { getToken } from '@/utils/auth'
-import Select from '@/views/student/study/select'
 
 export default {
   name: 'SubSystem',
-  components: { Select },
   data() {
     let checkCourse = (rule, value, callback) => {
       if (value === '' || value === null) {
