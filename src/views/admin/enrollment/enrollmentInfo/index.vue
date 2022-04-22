@@ -591,9 +591,7 @@ export default {
       const studentId = row.id
       this.$router.push({
         path:'/enroll/'+studentId,
-        // query:{
-        //   id:id,
-        // }
+
       })
     },
     handleDelete(row) {

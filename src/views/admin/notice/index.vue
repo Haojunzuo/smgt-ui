@@ -85,6 +85,14 @@
           >发布
           </el-button>
           <el-button
+            v-if="scope.row.status==='1'"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleCheck(scope.row)"
+          >查看
+          </el-button>
+          <el-button
             v-if="scope.row.status==='0'"
             size="mini"
             type="text"
@@ -109,6 +117,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getNoticeList"
     />
+
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="公告标题" prop="title">
@@ -139,7 +148,8 @@
         </el-form-item>
 
         <el-form-item label="公告内容" prop="content">
-          <el-input type="textarea" v-model="form.content" :autosize="{minRows:9, maxRows:18}" placeholder="请输入公告内容"/>
+<!--          <el-input type="textarea" v-model="form.content" :autosize="{minRows:9, maxRows:18}" placeholder="请输入公告内容"/>-->
+          <mavon-editor v-model="form.content"/>
         </el-form-item>
         <el-form-item label="是否紧急">
           <el-radio-group v-model="form.urgency">
@@ -161,9 +171,15 @@
 
 <script>
 import { listNotice, addNotice, delNotice, updateNotice, getNotice } from '@/api/admin/notice/notice'
+import { mavonEditor } from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+import router from '@/router'
 
 export default {
   name: 'SubSystem',
+  components:{
+    mavonEditor
+  },
   data() {
     return {
       total:0,
@@ -291,20 +307,47 @@ export default {
     },
 
     handleAdd() {
+      const noticeId = -1
+      this.$router.push({
+        path:"/noticeEdit/"+noticeId,
+        query:{
+          check:'0'
+        }
+      })
       this.reset()
       this.open = true
     },
 
     handleUpdate(row) {
-      this.reset()
-      const id = row.id || this.ids
-      getNotice(id).then(response => {
-        this.form = response.data
-        this.title = '修改课程'
-        this.open = true
+      const noticeId = row.id
+      this.$router.push({
+        path:"/noticeEdit/"+noticeId,
+        query:{
+          check:'0'
+        }
       })
     },
 
+    handleCheck(row) {
+      const noticeId = row.id
+      this.$router.push({
+        path:"/noticeEdit/"+noticeId,
+        query:{
+          check:'1'
+        }
+      })
+    },
+
+    // handleCheck(row) {
+    //   const Id = row.id
+    //   this.$router.push({
+    //     path:"/noticeEdit/pro",
+    //     query:{
+    //       noticeId:Id,
+    //       check:'1',
+    //     }
+    //   })
+    // },
     handleDelete(row) {
       const id = row.id || this.ids
       this.$confirm('是否确定编号为' + id + '的数据项?', '警告', {

@@ -118,33 +118,36 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/noticeEdit',
+    component: Layout,
+    hidden: true,
+    redirect: 'noredirect',
+    children: [
+      {
+        path: ':noticeId',
+        component: (resolve) => require(['@/views/admin/notice/noticeEdit'], resolve),
+        name: 'Detail',
+        meta: { title: '公告编辑', icon: 'user' },
+      }
+    ]
+  },
 
   // {
-  //   path: '/system/user-auth',
+  //   path: '/noticeEdit',
   //   component: Layout,
   //   hidden: true,
+  //   redirect: 'noredirect',
   //   children: [
   //     {
-  //       path: 'role/:userId(\\d+)',
-  //       component: (resolve) => require(['@/views/system/user/authRole'], resolve),
-  //       name: 'AuthRole',
-  //       meta: { title: '分配角色', activeMenu: '/system/user'}
+  //       path: 'pro',
+  //       component: (resolve) => require(['@/views/admin/notice/noticeEdit'], resolve),
+  //       name: 'Detail',
+  //       meta: { title: '公告编辑', icon: 'user' },
   //     }
   //   ]
   // },
-  // {
-  //   path: '/system/role-auth',
-  //   component: Layout,
-  //   hidden: true,
-  //   children: [
-  //     {
-  //       path: 'user/:roleId(\\d+)',
-  //       component: (resolve) => require(['@/views/system/role/authUser'], resolve),
-  //       name: 'AuthUser',
-  //       meta: { title: '分配用户', activeMenu: '/system/role'}
-  //     }
-  //   ]
-  // }
+
 ]
 
 export default new Router({
