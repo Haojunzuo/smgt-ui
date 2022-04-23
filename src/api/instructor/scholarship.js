@@ -37,3 +37,11 @@ export function addScholarship(data) {
     data:data,
   })
 }
+
+export function checkScholarshipExit(data) {
+  return request({
+    url:'/scholarship/checkScholarshipExit',
+    method:'put',
+    params:data,
+  })
+}

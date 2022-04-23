@@ -195,6 +195,7 @@ import { getToken } from '@/utils/auth'
 export default {
   name: 'SubSystem',
   data() {
+
     return {
       studentList: [],
       collegeList:[],

@@ -27,14 +27,12 @@
             v-for="item in statusList"
             :key="item.id"
             :label="item.name"
-            :value="item.id">
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </el-form-item>
 
-      <el-form-item label="学号" prop="studentNo">
-        <el-input v-model="queryParams.studentNo" placeholder="请输入学号" style="width: 180px" />
-      </el-form-item>
 
       <el-form-item>
         <el-button icon="el-icon-refresh" size="medium" @click="resetQuery">重置</el-button>
@@ -57,7 +55,6 @@
           plain
           icon="el-icon-plus"
           size="mini"
-          :disabled=true
           @click="handleAdd"
         >新增
         </el-button>
@@ -78,16 +75,24 @@
 
     <el-table v-loading="loading" :data="scholarShipList">
 
-      <el-table-column label="id" align="center" prop="id"/>
       <el-table-column label="学期" align="center" prop="semester"/>
       <el-table-column label="荣誉称号" align="center" prop="scholarshipName"/>
       <el-table-column label="学号" align="center" prop="studentNo"/>
       <el-table-column label="姓名" align="center" prop="studentName"/>
-      <el-table-column label="辅导员Id" align="center" prop="instructorId"/>
-      <el-table-column label="辅导员姓名" align="center" prop="instructorName"/>
       <el-table-column label="审核状态" align="center" prop="status">
         <template slot-scope="scope">
-          <span>{{ showModel(scope.row, 'status') }}</span>
+          <el-button type="primary" icon="el-icon-loading" v-if="scope.row.status==='0'" size="medium"
+                     @click="getDialogData(scope.row)"
+          >审批中...
+          </el-button>
+          <el-button type="success" icon="el-icon-medal" v-if="scope.row.status==='1'" size="medium"
+                     @click="getDialogData(scope.row)"
+          >审批通过
+          </el-button>
+          <el-button type="danger" icon="el-icon-warning" v-if="scope.row.status==='2'" size="medium"
+                     @click="getDialogData(scope.row)"
+          >审批拒绝
+          </el-button>
         </template>
       </el-table-column>
 
@@ -98,8 +103,16 @@
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleReview(scope.row)"
-          >审批
+            @click="handleUpdate(scope.row)"
+          >修改
+          </el-button>
+          <el-button
+            :disabled="scope.row.status==='1'|| scope.row.status==='2'"
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleDelete(scope.row)"
+          >删除
           </el-button>
         </template>
       </el-table-column>
@@ -112,79 +125,207 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <el-dialog title="评优审批" :visible.sync="open" width="60%">
-      <el-form :model="form" >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="学期" :label-width="formLabelWidth">
-              <el-select v-model="form.semester" placeholder="请选择学期" disabled>
-                <el-option value="2015-2016-1" label="2015-2016-1"/>
-                <el-option value="2015-2016-2" label="2015-2016-2"/>
-                <el-option value="2016-2017-1" label="2016-2017-1"/>
-                <el-option value="2016-2017-2" label="2016-2017-2"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
 
-          <el-col :span="8">
-            <el-form-item label="荣誉称号" :label-width="formLabelWidth">
-              <el-select v-model="form.scholarshipNo" placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in scholarshipList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+    <el-dialog title="荣誉称号审批详情" :visible.sync="dialogTableVisible">
+      <el-descriptions class="margin-top" :column="2" border title="申请信息">
+        <el-descriptions-item :span="1">
+          <template slot="label">
+            <i class="el-icon-date">
+              学期
+            </i>
+          </template>
+          {{ dialogData.semester }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-box">
+              奖学金类型
+            </i>
+          </template>
+          {{ showType(dialogData.scholarshipNo) }}
+        </el-descriptions-item>
 
-          <el-col :span="8">
-            <el-form-item label="学号" :label-width="formLabelWidth">
-              <el-input v-model="form.studentNo" autocomplete="off" readonly />
-            </el-form-item>
-          </el-col>
+        <el-descriptions-item :span="1">
+          <template slot="label">
+            <i class="el-icon-tickets"/>
+            学号
+          </template>
+          {{ dialogData.studentNo }}
+        </el-descriptions-item>
 
-        </el-row>
+        <el-descriptions-item :span="1">
+          <template slot="label">
+            <i class="el-icon-user"/>
+            姓名
+          </template>
+          {{ dialogData.studentName }}
+        </el-descriptions-item>
 
-        <el-form-item label="申请理由" prop="reason" :label-width="formLabelWidth">
-          <el-input type="textarea" v-model="form.reason" :autosize="{minRows:9, maxRows:18}" placeholder="请输入内容" readonly/>
-        </el-form-item>
-
-
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="success" @click="approve">批准</el-button>
-        <el-button type="info" @click="reject">拒绝</el-button>
+        <el-descriptions-item>
+          <template slot="label" style="height: 500px">
+            <i class="el-icon-reading"/>
+            申请原因
+          </template>
+          {{ dialogData.reason }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <div style="margin: 20px 0">
+        <div style="font-size: 16px;font-weight: bold;padding-bottom: 20px">审批状态</div>
+        <el-steps :space="600" :active="dialogData.status === '0'? 1:3" finish-status="success" :align-center="true"
+                  :process-status="'finish'" simple
+        >
+          <el-step title="提交信息"></el-step>
+          <el-step title="审批中"></el-step>
+          <el-step title="审批完成"></el-step>
+        </el-steps>
       </div>
+
+      <el-descriptions title="审批结果" :column="3" :size="'medium'" border class="margin-top"
+                       v-if="dialogData.status!=='0'"
+      >
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-user"></i>
+            审批人
+          </template>
+          {{ dialogData.instructorName }}
+        </el-descriptions-item>
+        <el-descriptions-item span="3">
+          <template slot="label">
+            <i class="el-icon-tickets"></i>
+            审批结果
+          </template>
+          <div style="position: relative">
+            <div style="float: left">{{ showModel(dialogData, 'status') }}</div>
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
     </el-dialog>
+
+    <el-drawer
+      title="修改奖学金申请"
+      :visible.sync="drawer"
+      :direction="'rtl'"
+      :with-header="false"
+      :size="'36%'"
+    >
+      <el-card>
+        <el-tabs v-model="activeName">
+          <el-tab-pane label="报备申请" name="basic">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="申请人: ">
+                    {{ this.student.nickName }}
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="学号: ">
+                    {{ this.student.studentNo }}
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="所在学院: ">
+                    {{ this.student.collegeInfo.collegename }}
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="学期" prop="semester">
+                    <el-select v-model="form.semester" placeholder="请选择学期">
+                      <el-option value="2015-2016-1" label="2015-2016-1"/>
+                      <el-option value="2015-2016-2" label="2015-2016-2"/>
+                      <el-option value="2016-2017-1" label="2016-2017-1"/>
+                      <el-option value="2016-2017-2" label="2016-2017-2"/>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="荣誉称号" prop="scholarshipNo">
+                    <el-select v-model="form.scholarshipNo" placeholder="请选择荣誉称号类型">
+                      <el-option v-for="item in scholarshipList" :key="item.id" :value="item.id" :label="item.name"/>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="24">
+                  <el-form-item label="申请理由:" prop="reason">
+                    <el-input
+                      type="textarea"
+                      :rows="3"
+                      placeholder="申请理由"
+                      v-model="form.reason"
+                    >
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+
+              </el-row>
+            </el-form>
+          </el-tab-pane>
+        </el-tabs>
+
+        <el-form label-width="100px">
+          <el-form-item style="text-align: center;margin-left:-100px;margin-top:10px;">
+            <el-button type="primary" @click="submitForm">确 定</el-button>
+            <el-button @click="cancel">返回</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </el-drawer>
+
   </div>
 </template>
 
 <script>
 import { getToken } from '@/utils/auth'
-import { listScholarship, addScholarship, delScholarship, getScholarship, updateScholarship } from '@/api/instructor/scholarship'
+import {
+  listScholarship,
+  addScholarship,
+  delScholarship,
+  getScholarship,
+  updateScholarship, checkScholarshipExit
+} from '@/api/instructor/scholarship'
 
 export default {
   name: 'SubSystem',
   data() {
+    let checkScholarship = (rule, value, callback)=>{
+      if (value===''|| value===null){
+        callback(new Error('请选择荣誉称号类型！'))
+      }else if (this.form.semester===''||this.form.semester===null){
+        callback()
+      }else{
+        checkScholarshipExit(this.form).then(res=>{
+          console.log(res)
+          if (res===false){
+            callback(new Error('您已经申请了此荣誉称号，无需再次申请！'));
+          }else{
+            callback();
+          }
+        })
+      }
+    }
     return {
-      formLabelWidth:'70px',
-      form:{},
-      scholarship:{},
-      scholarshipList:[
-        { id:'6',name:'优秀共青团员荣誉称号', },
-        { id:'7',name:'优秀共青团干部荣誉称号', },
-        { id:'8',name:'三好学生荣誉称号', },
-        { id:'9',name:'优秀共产党员荣誉称号', },
-        { id:'10',name:'优秀共青团员标兵荣誉称号', },
-        { id:'11',name:'优秀共青团干部标兵荣誉称号', },
+      student: {},
+      drawer: false,
+      activeName: 'basic',
+      dialogTableVisible: false,
+      dialogData: {},
+      formLabelWidth: '70px',
+      form: {},
+      scholarship: {},
+      scholarshipList: [
+        { id: '6', name: '优秀共青团员荣誉称号' },
+        { id: '7', name: '优秀共青团干部荣誉称号' },
+        { id: '8', name: '三好学生荣誉称号' },
+        { id: '9', name: '优秀共产党员荣誉称号' },
+        { id: '10', name: '优秀共青团员标兵荣誉称号' },
+        { id: '11', name: '优秀共青团干部标兵荣誉称号' }
       ],
-      statusList:[
-        {id:'0',name:'已提交'},
-        {id:'1',name:'已批准'},
-        {id:'2',name:'已拒绝'},
+      statusList: [
+        { id: '0', name: '已提交' },
+        { id: '1', name: '已通过' },
+        { id: '2', name: '已拒绝' }
       ],
       scholarShipList: [],
       total: 0,
@@ -201,54 +342,83 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        semester:'2015-2016-1',
+        semester: '2015-2016-1',
         scholarshipNo: null,
-        studentNo:null,
-        status:null,
+        studentNo: null,
+        status: null
       },
 
       rules: {
+        semester:[
+          {required:true, message:"请选择学期", trigger:"blur"}
+        ],
+        scholarshipNo:[
+          {required:true, trigger:"blur", validator: checkScholarship}
+        ],
+        reason:[
+          {required:true, message:"请填写申请原因", trigger:"blur"}
+        ]
       },
     }
   },
   created() {
+    this.student = this.$store.getters.studentInfo
     this.getList()
   },
   watch: {
     queryParams: {
       deep: true,
       handler: 'getList'
-    },
+    }
   },
 
   methods: {
-    cancel(){
-      this.reset();
-      this.open = false;
-    },
-    approve(){
-      this.form.status = "1";
-      updateScholarship(this.form).then(res=>{
-        console.log("updateScholarship:",res)
-        this.getList()
-        this.open = false;
-        this.reset();
+    submitForm(){
+      this.$refs["form"].validate(valid=>{
+        if (valid){
+          if (this.form.id!=null){
+            updateScholarship(this.form).then(res=>{
+              this.msgSuccess("修改成功")
+              this.drawer = false;
+              this.getList();
+            })
+          }else{
+            this.form.studentNo = this.student.studentNo;
+            this.form.instructorId = this.student.instructorId;
+            this.form.status = '0';
+            this.form.type = '2';
+            addScholarship(this.form).then(res=>{
+              this.msgSuccess("新增成功")
+              this.drawer = false;
+              this.getList();
+            })
+          }
+        }
       })
+    },
+    showType(no) {
+      let scholarshipName = null
+      this.scholarshipList.find((obj) => {
+        if (obj.id === no) {
+          scholarshipName = obj.name
+        }
+      })
+      return scholarshipName
+    },
+    getDialogData(data) {
+      this.dialogTableVisible = true
+      this.dialogData = data
     },
 
-    reject(){
-      this.form.status = "2";
-      updateScholarship(this.form).then(res=>{
-        console.log("updateScholarship:",res)
-        this.getList()
-        this.open = false;
-        this.reset();
-      })
+    cancel() {
+      this.reset()
+      this.drawer = false
     },
+
     getList() {
       this.loading = true
-      this.queryParams.type = '2';
-      console.log("this.queryParams:",this.queryParams)
+      this.queryParams.type = '2'
+      console.log('this.queryParams:', this.queryParams)
       listScholarship(this.queryParams).then(response => {
         this.scholarShipList = response.rows
         console.log(response)
@@ -275,19 +445,23 @@ export default {
     },
     handleUpdate(row) {
       const id = row.id
-      this.$router.push({
-        path:'/enrollment/detail',
-        query:{
-          id:id,
-        }
+      this.drawer = true
+      getScholarship(id).then(res => {
+        this.form = res.data
       })
     },
-    handleReview(row){
-      const scholarshipId = row.id
-      getScholarship(scholarshipId).then(res=>{
-        console.log(res)
-        this.form = res.data;
-        this.open = true;
+    handleDelete(row) {
+      const id = row.id
+      this.$confirm('确定要删除编号为' + id + '的数据项？', '警告', {
+        confirmButtonClass: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delScholarship(id)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      }).catch(() => {
       })
     },
 
@@ -296,9 +470,9 @@ export default {
       this.form = {
         id: null,
         semester: null,
-        status:null,
-        studentNo:null,
-        type:null,
+        scholarshipNo: null,
+        status: '0',
+        type: 1
 
       }
       this.resetForm('form')
@@ -312,8 +486,7 @@ export default {
             name = obj.name
           }
         })
-      }
-      else if (str === 'nation') {
+      } else if (str === 'nation') {
         this.nationList.find((obj) => {
           if (obj.id === row.nation) {
             name = obj.info
@@ -325,15 +498,15 @@ export default {
             name = obj.info
           }
         })
-      } else if (str==='major'){
-        this.majorList.find((obj)=>{
-          if (obj.id===row.major){
-            name = obj.info;
+      } else if (str === 'major') {
+        this.majorList.find((obj) => {
+          if (obj.id === row.major) {
+            name = obj.info
           }
         })
       }
       return name
-    },
+    }
   }
 }
 </script>

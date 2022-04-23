@@ -27,13 +27,14 @@
             v-for="item in statusList"
             :key="item.id"
             :label="item.name"
-            :value="item.id">
+            :value="item.id"
+          >
           </el-option>
         </el-select>
       </el-form-item>
 
       <el-form-item label="学号" prop="studentNo">
-        <el-input v-model="queryParams.studentNo" placeholder="请输入学号" style="width: 180px" />
+        <el-input v-model="queryParams.studentNo" placeholder="请输入学号" style="width: 180px"/>
       </el-form-item>
 
       <el-form-item>
@@ -78,7 +79,6 @@
 
     <el-table v-loading="loading" :data="scholarShipList">
 
-      <el-table-column label="id" align="center" prop="id"/>
       <el-table-column label="学期" align="center" prop="semester"/>
       <el-table-column label="奖学金名称" align="center" prop="scholarshipName"/>
       <el-table-column label="金额" align="center" prop="money"/>
@@ -114,44 +114,50 @@
       @pagination="getList"
     />
     <el-dialog title="奖学金审批" :visible.sync="open" width="60%">
-      <el-form :model="form" >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="学期" :label-width="formLabelWidth">
-              <el-select v-model="form.semester" placeholder="请选择学期" disabled>
-                <el-option value="2015-2016-1" label="2015-2016-1"/>
-                <el-option value="2015-2016-2" label="2015-2016-2"/>
-                <el-option value="2016-2017-1" label="2016-2017-1"/>
-                <el-option value="2016-2017-2" label="2016-2017-2"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
+      <el-form :model="form">
+        <el-descriptions class="margin-top" :column="2" border>
+          <el-descriptions-item :span="1">
+            <template slot="label">
+              <i class="el-icon-date"/>
+              学期
+            </template>
+            {{ form.semester }}
+          </el-descriptions-item>
 
-          <el-col :span="8">
-            <el-form-item label="奖学金" :label-width="formLabelWidth">
-              <el-select v-model="form.scholarshipNo" placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in scholarshipList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          <el-descriptions-item :span="1">
+            <template slot="label">
+              <i class="el-icon-box"/>
+              奖学金类型
+            </template>
+            <template>
+              {{showType(form.scholarshipNo)}}
+            </template>
+          </el-descriptions-item>
 
-          <el-col :span="8">
-            <el-form-item label="学号" :label-width="formLabelWidth">
-              <el-input v-model="form.studentNo" autocomplete="off" readonly />
-            </el-form-item>
-          </el-col>
 
-        </el-row>
+          <el-descriptions-item :span="1">
+            <template slot="label" >
+              <i class="el-icon-tickets"/>
+              学号
+            </template>
+            {{ form.studentNo }}
+          </el-descriptions-item>
 
-        <el-form-item label="申请理由" prop="reason" :label-width="formLabelWidth">
-          <el-input type="textarea" v-model="form.reason" :autosize="{minRows:9, maxRows:18}" placeholder="请输入内容" readonly/>
-        </el-form-item>
-
+          <el-descriptions-item :span="1">
+            <template slot="label">
+              <i class="el-icon-user"/>
+              姓名
+            </template>
+            {{ form.studentName }}
+          </el-descriptions-item>
+          <el-descriptions-item >
+            <template slot="label" style="height: 500px">
+              <i class="el-icon-reading"/>
+              申请原因
+            </template>
+            {{ form.reason }}
+          </el-descriptions-item>
+        </el-descriptions>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -165,26 +171,32 @@
 
 <script>
 import { getToken } from '@/utils/auth'
-import { listScholarship, addScholarship, delScholarship, getScholarship, updateScholarship } from '@/api/instructor/scholarship'
+import {
+  listScholarship,
+  addScholarship,
+  delScholarship,
+  getScholarship,
+  updateScholarship
+} from '@/api/instructor/scholarship'
 
 export default {
   name: 'SubSystem',
   data() {
     return {
-      formLabelWidth:'70px',
-      form:{},
-      scholarship:{},
-      scholarshipList:[
-        { id:'1',name:'国家奖学金', },
-        { id:'2',name:'国家励志奖学金', },
-        { id:'3',name:'校一等奖学金', },
-        { id:'4',name:'校二等奖学金', },
-        { id:'5',name:'校三等奖学金', },
+      formLabelWidth: '70px',
+      form: {},
+      scholarship: {},
+      scholarshipList: [
+        { id: '1', name: '国家奖学金' },
+        { id: '2', name: '国家励志奖学金' },
+        { id: '3', name: '校一等奖学金' },
+        { id: '4', name: '校二等奖学金' },
+        { id: '5', name: '校三等奖学金' }
       ],
-      statusList:[
-        {id:'0',name:'已提交'},
-        {id:'1',name:'已批准'},
-        {id:'2',name:'已拒绝'},
+      statusList: [
+        { id: '0', name: '已提交' },
+        { id: '1', name: '已通过' },
+        { id: '2', name: '已拒绝' }
       ],
       scholarShipList: [],
       total: 0,
@@ -201,14 +213,13 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        semester:'2015-2016-1',
+        semester: '2015-2016-1',
         scholarshipNo: null,
-        studentNo:null,
-        status:null,
+        studentNo: null,
+        status: null
       },
 
-      rules: {
-      },
+      rules: {}
     }
   },
   created() {
@@ -218,37 +229,46 @@ export default {
     queryParams: {
       deep: true,
       handler: 'getList'
-    },
+    }
   },
 
   methods: {
-    cancel(){
-      this.reset();
-      this.open = false;
+    showType(no){
+      let scholarshipName = null
+      this.scholarshipList.find((obj)=>{
+        if(obj.id===no){
+          scholarshipName = obj.name;
+        }
+      })
+      return scholarshipName;
     },
-    approve(){
-      this.form.status = "1";
-      updateScholarship(this.form).then(res=>{
-        console.log("updateScholarship:",res)
+    cancel() {
+      this.reset()
+      this.open = false
+    },
+    approve() {
+      this.form.status = '1'
+      updateScholarship(this.form).then(res => {
+        console.log('updateScholarship:', res)
         this.getList()
-        this.open = false;
-        this.reset();
+        this.open = false
+        this.reset()
       })
     },
 
-    reject(){
-      this.form.status = "2";
-      updateScholarship(this.form).then(res=>{
-        console.log("updateScholarship:",res)
+    reject() {
+      this.form.status = '2'
+      updateScholarship(this.form).then(res => {
+        console.log('updateScholarship:', res)
         this.getList()
-        this.open = false;
-        this.reset();
+        this.open = false
+        this.reset()
       })
     },
     getList() {
       this.loading = true
-      this.queryParams.type = '1';
-      console.log("this.queryParams:",this.queryParams)
+      this.queryParams.type = '1'
+      console.log('this.queryParams:', this.queryParams)
       listScholarship(this.queryParams).then(response => {
         this.scholarShipList = response.rows
         console.log(response)
@@ -276,18 +296,18 @@ export default {
     handleUpdate(row) {
       const id = row.id
       this.$router.push({
-        path:'/enrollment/detail',
-        query:{
-          id:id,
+        path: '/enrollment/detail',
+        query: {
+          id: id
         }
       })
     },
-    handleReview(row){
+    handleReview(row) {
       const scholarshipId = row.id
-      getScholarship(scholarshipId).then(res=>{
+      getScholarship(scholarshipId).then(res => {
         console.log(res)
-        this.form = res.data;
-        this.open = true;
+        this.form = res.data
+        this.open = true
       })
     },
 
@@ -296,9 +316,9 @@ export default {
       this.form = {
         id: null,
         semester: null,
-        status:null,
-        studentNo:null,
-        type:null,
+        status: null,
+        studentNo: null,
+        type: null
 
       }
       this.resetForm('form')
@@ -312,8 +332,7 @@ export default {
             name = obj.name
           }
         })
-      }
-      else if (str === 'nation') {
+      } else if (str === 'nation') {
         this.nationList.find((obj) => {
           if (obj.id === row.nation) {
             name = obj.info
@@ -325,15 +344,15 @@ export default {
             name = obj.info
           }
         })
-      } else if (str==='major'){
-        this.majorList.find((obj)=>{
-          if (obj.id===row.major){
-            name = obj.info;
+      } else if (str === 'major') {
+        this.majorList.find((obj) => {
+          if (obj.id === row.major) {
+            name = obj.info
           }
         })
       }
       return name
-    },
+    }
   }
 }
 </script>

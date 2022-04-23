@@ -78,7 +78,6 @@
 
     <el-table v-loading="loading" :data="scholarShipList">
 
-      <el-table-column label="id" align="center" prop="id"/>
       <el-table-column label="学期" align="center" prop="semester"/>
       <el-table-column label="荣誉称号" align="center" prop="scholarshipName"/>
       <el-table-column label="学号" align="center" prop="studentNo"/>
@@ -112,45 +111,57 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
     <el-dialog title="评优审批" :visible.sync="open" width="60%">
       <el-form :model="form" >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="学期" :label-width="formLabelWidth">
-              <el-select v-model="form.semester" placeholder="请选择学期" disabled>
-                <el-option value="2015-2016-1" label="2015-2016-1"/>
-                <el-option value="2015-2016-2" label="2015-2016-2"/>
-                <el-option value="2016-2017-1" label="2016-2017-1"/>
-                <el-option value="2016-2017-2" label="2016-2017-2"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
+        <el-descriptions class="margin-top" :column="2" border>
+          <el-descriptions-item :span="1">
+            <template slot="label">
+              <i class="el-icon-date"/>
+              学期
+            </template>
+            {{form.semester}}
+          </el-descriptions-item>
 
-          <el-col :span="8">
-            <el-form-item label="荣誉称号" :label-width="formLabelWidth">
-              <el-select v-model="form.scholarshipNo" placeholder="请选择" disabled>
-                <el-option
-                  v-for="item in scholarshipList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+        <el-descriptions-item :span="1">
+          <template slot="label">
+            <i class="el-icon-box"/>
+            荣誉称号类型
+          </template>
+          <template>
+            {{showType(form.scholarshipNo)}}
+          </template>
+        </el-descriptions-item>
+        <el-descriptions-item :span="1">
+          <template slot="label">
+            <i class="el-icon-tickets"/>
+            学号
+          </template>
+          <template>
+            {{ form.studentNo }}
+          </template>
+        </el-descriptions-item>
+        <el-descriptions-item :span="1">
+          <template slot="label">
+            <i class="el-icon-user"/>
+            姓名
+          </template>
+          <template>
+            {{ form.studentName }}
+          </template>
+        </el-descriptions-item>
 
-          <el-col :span="8">
-            <el-form-item label="学号" :label-width="formLabelWidth">
-              <el-input v-model="form.studentNo" autocomplete="off" readonly />
-            </el-form-item>
-          </el-col>
+        <el-descriptions-item :span="2">
+          <template slot="label">
+            <i class="el-icon-reading"/>
+            申请原因
+          </template>
+          <template>
+            {{ form.reason }}
+          </template>
+        </el-descriptions-item>
 
-        </el-row>
-
-        <el-form-item label="申请理由" prop="reason" :label-width="formLabelWidth">
-          <el-input type="textarea" v-model="form.reason" :autosize="{minRows:9, maxRows:18}" placeholder="请输入内容" readonly/>
-        </el-form-item>
-
+        </el-descriptions>
 
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -183,7 +194,7 @@ export default {
       ],
       statusList:[
         {id:'0',name:'已提交'},
-        {id:'1',name:'已批准'},
+        {id:'1',name:'已通过'},
         {id:'2',name:'已拒绝'},
       ],
       scholarShipList: [],
@@ -222,6 +233,15 @@ export default {
   },
 
   methods: {
+    showType(no){
+      let name = null;
+      this.scholarShipList.find((obj)=>{
+        if (obj.id===no){
+          name = obj.name;
+        }
+      })
+      return name;
+    },
     cancel(){
       this.reset();
       this.open = false;

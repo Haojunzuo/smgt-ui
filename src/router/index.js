@@ -133,20 +133,6 @@ export const constantRoutes = [
     ]
   },
 
-  // {
-  //   path: '/noticeEdit',
-  //   component: Layout,
-  //   hidden: true,
-  //   redirect: 'noredirect',
-  //   children: [
-  //     {
-  //       path: 'pro',
-  //       component: (resolve) => require(['@/views/admin/notice/noticeEdit'], resolve),
-  //       name: 'Detail',
-  //       meta: { title: '公告编辑', icon: 'user' },
-  //     }
-  //   ]
-  // },
 
 ]
 
