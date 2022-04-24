@@ -11,13 +11,13 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button icon="el-icon-plus" type="primary" size="medium" @click="handleWeight">计算加权学习成绩</el-button>
+        <el-button icon="el-icon-edit" type="primary" size="medium" @click="handleWeight">计算学业加权成绩</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-edit" type="primary" size="medium" @click="handleImport">导入综测成绩</el-button>
+        <el-button icon="el-icon-upload2" type="warning" size="medium" @click="handleImport">导入综测成绩</el-button>
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-refresh" type="success" size="medium" @click="handleTotal">计算总成绩</el-button>
+        <el-button icon="el-icon-star-on" type="success" size="medium" @click="handleTotal">计算总成绩</el-button>
       </el-form-item>
     </el-form>
 
