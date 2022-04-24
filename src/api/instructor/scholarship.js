@@ -45,3 +45,4 @@ export function checkScholarshipExit(data) {
     params:data,
   })
 }
+

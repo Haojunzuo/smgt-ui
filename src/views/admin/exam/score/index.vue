@@ -72,6 +72,7 @@
           <span>{{showModel(scope.row,'courseAttr')}}</span>
         </template>
       </el-table-column>
+      <el-table-column label="学分" align="center" prop="credit"/>
       <el-table-column label="学号" align="center" prop="studentNo"/>
       <el-table-column label="姓名" align="center" prop="studentName"/>
       <el-table-column label="分数" align="center" prop="score">
@@ -284,6 +285,7 @@ export default {
     getScoreList() {
       this.loading = true;
       listScore(this.queryParams).then(response => {
+        console.log(response)
         let scores = response.rows
         this.total = response.total;
         for (let i=0; i<scores.length; i++){
@@ -294,6 +296,7 @@ export default {
         this.scoreList = scores;
         this.loading = false;
       })
+
     },
     getCourseList() {
       listCourse().then(response => {

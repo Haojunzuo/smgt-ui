@@ -84,7 +84,7 @@
       <el-table-column label="金额" align="center" prop="money"/>
       <el-table-column label="学号" align="center" prop="studentNo"/>
       <el-table-column label="姓名" align="center" prop="studentName"/>
-      <el-table-column label="辅导员Id" align="center" prop="instructorId"/>
+      <el-table-column label="综合成绩" align="center" prop="totalScore"/>
       <el-table-column label="辅导员姓名" align="center" prop="instructorName"/>
       <el-table-column label="审核状态" align="center" prop="status">
         <template slot-scope="scope">
@@ -195,7 +195,7 @@ export default {
       ],
       statusList: [
         { id: '0', name: '已提交' },
-        { id: '1', name: '已通过' },
+        { id: '1', name: '已批准' },
         { id: '2', name: '已拒绝' }
       ],
       scholarShipList: [],
