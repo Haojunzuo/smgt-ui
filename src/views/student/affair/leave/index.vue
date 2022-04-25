@@ -159,19 +159,19 @@
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="申请人: ">
-                      王炳哲
+                      {{this.$store.getters.nickName}}
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="学号: ">
   <!--                    <el-input label="2018201932" />-->
-                      2018201932
+                      {{this.$store.getters.studentInfo.studentNo}}
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
                     <el-form-item label="所在学院: " >
   <!--                    <el-input label="计算机科学与技术学院"/>-->
-                      计算机科学与技术学院
+                      {{this.$store.getters.studentInfo.collegeInfo.collegename}}
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
@@ -259,14 +259,14 @@
             <i class="el-icon-user"></i>
             申请人
           </template>
-          kooriookami
+          {{this.$store.getters.nickName}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-mobile-phone"></i>
             学号
           </template>
-          2018201206
+          {{this.$store.getters.studentInfo.studentNo}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -281,14 +281,14 @@
             <i class="el-icon-location-outline"></i>
             所在学院
           </template>
-          计算机科学与技术学院
+          {{this.$store.getters.studentInfo.collegeInfo.collegename}}
         </el-descriptions-item>
         <el-descriptions-item >
           <template slot="label">
             <i class="el-icon-location-outline"></i>
-            年级
+            班级
           </template>
-          大四
+          {{this.$store.getters.studentInfo.classInfo.classname}}大四
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -340,7 +340,7 @@
             <i class="el-icon-mobile-phone"></i>
             手机号
           </template>
-          18100000000
+          {{phoneString(dialogData.userId)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -368,13 +368,9 @@
 
 <script>
   import { listLeave, getLeave, delLeave, addLeave, updateLeave } from "@/api/student/leave";
-  import Vue from 'vue';
-  import Vodal from 'vodal';
-  import "vodal/common.css";
-  import "vodal/slide-right.css";
   import {getToken} from "@/utils/auth";
   import {regionData, CodeToText} from "element-china-area-data";
-  Vue.component(Vodal.name, Vodal);
+  import {getUser, listUser} from "../../../../api/user";
   const typeList = {
     1:'公假',
     2:'病假',
@@ -422,7 +418,7 @@
           orderBy: 'id asc',
           status: null,
           type: null,
-          studentId: 1
+          studentId: this.$store.getters.studentInfo.id
         },
         // 表单参数
         form: {},
@@ -471,10 +467,14 @@
           {label:'其他',value:6}
         ],
         dialogTableVisible: false,
-        dialogData: {}
+        dialogData: {},
+        userList: []
       };
     },
     created() {
+      listUser({role: 2}).then(res=>{
+        this.userList = res.data
+      })
       this.getList();
     },
     watch:{
@@ -559,7 +559,7 @@
           orderBy: 'id desc',
           status: null,
           type: null,
-          studentId: 1
+          studentId: this.$store.getters.studentInfo.id
         };
       },
       /** 重置按钮操作 */
@@ -603,7 +603,7 @@
                 this.getList();
               });
             } else {
-                this.form.status = 1
+                this.form.status = this.$store.getters.studentInfo.id
                 addLeave(this.form).then(response => {
                 this.msgSuccess("新增成功");
                 this.open = false;
@@ -660,7 +660,17 @@
       },
       userString(id){
         if(id === null) return '无'
-        else return id
+        else {
+          let obj = this.userList.find(item=>item.userId === id)
+          return obj.nickName
+        }
+      },
+      phoneString(id){
+        if(id === null) return '无'
+        else {
+          let obj = this.userList.find(item=>item.userId === id)
+          return obj.phoneNumber
+        }
       },
       getDialogData(data){
         this.dialogTableVisible = true

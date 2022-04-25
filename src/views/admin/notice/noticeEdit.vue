@@ -7,7 +7,7 @@
         </el-form-item>
 
       <el-row>
-        <el-col :span="8">
+        <el-col :span="spanLength">
           <el-form-item label="公告类型" prop="noticetype">
             <el-select v-model="form.noticetype" filterable placeholder="请选择" :disabled="check">
               <el-option
@@ -20,7 +20,21 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="spanLength" v-if="form.noticetype === '3'" >
+          <el-form-item label="截止时间" prop="endTime" required>
+            <el-date-picker
+              v-model="form.endTime"
+              type="datetime"
+              clearable
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择截止时间"
+              :disabled="check"
+            >
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="spanLength">
           <el-form-item label="发布单位" prop="institution">
             <el-select v-model="form.institution" filterable placeholder="请选择" :disabled="check">
               <el-option
@@ -33,7 +47,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="spanLength">
           <el-form-item label="是否紧急">
             <el-radio-group v-model="form.urgency" :disabled="check">
               <el-radio :label="'0'">一般</el-radio>
@@ -94,7 +108,7 @@ export default {
       form: {},
       title: '新增公告',
       open: false,
-      typeMap: { '0': '考务信息', '1': '教学安排', '2': '事务公示' },
+      typeMap: { '0': '考务信息', '1': '教学安排', '2': '事务公示' ,'3': '勤工助学'},
       urgencyMap: { '0': '一般', '1': '紧急' },
       statusMap: { '0': '草稿', '1': '已发布' },
       institutionMap: { '0': '教务办', '1': '学工办', '2': '党委' },
@@ -106,7 +120,8 @@ export default {
         pageNum: 1,
         pageSize: 10,
         title: null
-      }
+      },
+      spanLength: 8
     }
   },
   created() {
@@ -124,7 +139,17 @@ export default {
       })
     }
   },
-  watch: {},
+  watch: {
+    'form.noticetype':{
+      handler(news) {
+        if(news === '3') {
+          this.spanLength = 6
+        }else {
+          this.spanLength = 8
+        }
+      }
+    }
+  },
 
   methods: {
     // 测试findIndex方法
@@ -211,6 +236,7 @@ export default {
         publisher: null,
         noticetime: null,
         noticetype: '0',
+        endTime: null,
         file: null,
         urgency: '0',
         status: '0',

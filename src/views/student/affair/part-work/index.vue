@@ -1,8 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="勤工助学">
+        <el-select v-model="queryParams.noticeId" placeholder="请选择" clearable>
+          <el-option
+            v-for="item in noticeList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="审批状态" prop="staffCatCode">
-        <el-select v-model="queryParams.status" placeholder="请选择">
+        <el-select v-model="queryParams.status" placeholder="请选择" clearable>
           <el-option
             v-for="item in statusOptions"
             :key="item.value"
@@ -52,47 +62,31 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="toRequestList" @selection-change="handleSelectionChange" :row-class-name="tableRowClassName">
+    <el-table v-loading="loading" :data="partTimeList" @selection-change="handleSelectionChange" :row-class-name="tableRowClassName">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="申请时间" align="center" prop="type" sortable>
+      <el-table-column label="申请岗位" align="center" prop="noticeId" sortable>
         <template slot-scope="scope">
-          <span>{{scope.row.requestTime}}</span>
+          <span>{{getNoticeName(scope.row.noticeId)}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="交通方式" align="center">
+      <el-table-column label="联系电话" align="center" prop="phone" >
         <template slot-scope="scope">
-          <span>{{toTypeString(scope.row.toType) + '-' +scope.row.toNum}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="预计到校时间" align="center" prop="startTime">
-        <template slot-scope="scope">
-          <span>{{scope.row.toTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="出发地" align="center" prop="location">
-        <template slot-scope="scope">
-          <span>{{getCodeToText(scope.row.location)}}</span>
+          <span>{{scope.row.phone}}</span>
         </template>
       </el-table-column>
       <el-table-column label="审批状态" align="center" prop="status" >
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-loading" v-if="scope.row.status === '1'" size="medium" plain @click="getDialogData(scope.row)">审批中</el-button>
-          <el-button type="warning" icon="el-icon-thumb" v-else-if="scope.row.status === '2'" size="medium" plain @click="getDialogData(scope.row)">待确认</el-button>
-          <el-button type="success" icon="el-icon-medal" v-else-if="scope.row.status === '3' && scope.row.resultType === '1'" size="medium" plain @click="getDialogData(scope.row)">已通过</el-button>
+          <el-button type="success" icon="el-icon-medal" v-else-if="scope.row.status === '2'" size="medium" plain @click="getDialogData(scope.row)">已通过</el-button>
           <el-button type="danger" icon="el-icon-warning" v-else size="medium" plain @click="getDialogData(scope.row)">已拒绝</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="审批人" align="center" prop="userId" width="80">
+      <el-table-column label="审批人" align="center" prop="userId" >
         <template slot-scope="scope">
           <span>{{userString(scope.row.userId)}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="审批结果" align="center" prop="result">
-        <template slot-scope="scope">
-          <span>{{scope.row.result === null ? '无' : scope.row.result}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="150">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" >
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -161,62 +155,24 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="交通方式:" prop="toType">
-                    <el-radio-group v-model="form.toType">
-                      <el-radio :label="1">飞机</el-radio>
-                      <el-radio :label="2">高铁</el-radio>
-                      <el-radio :label="3">火车</el-radio>
-                      <el-radio :label="4">私家车</el-radio>
-                    </el-radio-group>
+                  <el-form-item label="勤工助学:" prop="noticeId">
+                    <el-select v-model="form.noticeId" placeholder="请选择" clearable>
+                      <el-option
+                        v-for="item in noticeList"
+                        :key="item.id"
+                        :label="item.title"
+                        :value="item.id">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item  prop="toNum">
-                    <el-input v-model="form.toNum" placeholder="请输入班次信息"/>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="预计到达时间:" prop="toTime">
-                    <el-date-picker
-                      v-model="form.toTime"
-                      type="datetime"
-                      clearable
-                      style="width: 100%"
-                      value-format="yyyy-MM-dd HH:mm:ss"
-                      placeholder="选择预计到达时间"
-                    >
-                    </el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="出发地:" prop="location">
-                    <el-cascader
-                      size="large"
-                      :options="options"
-                      v-model="selectedOptions"
-                      style="width: 100%"
-                      clearable
-                      placeholder="选择出发地"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24" v-if="form.location !== null && form.location !== ''" >
-                  <el-form-item label="" prop="detailLocation">
+                  <el-form-item label="个人介绍:" prop="detail">
                     <el-input
                       type="textarea"
                       :rows="3"
-                      placeholder="填写详细地址"
-                      v-model="form.detailLocation"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="详细行程:" prop="toDetail">
-                    <el-input
-                      type="textarea"
-                      :rows="3"
-                      placeholder="请填写详细行程信息"
-                      v-model="form.toDetail">
+                      placeholder="请填写详细个人介绍"
+                      v-model="form.detail">
                     </el-input>
                   </el-form-item>
                 </el-col>
@@ -224,12 +180,9 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="附件" name="other">
-            <el-form :model="form"  label-width="80px">
-              <el-form-item label="图片:">
-                <imageUpload :value="form.imgFile" :data="data" @input="changeImgFile($event)"/>
-              </el-form-item>
+            <el-form  label-width="80px">
               <el-form-item label="文件:">
-                <fileUpload :value="form.textFile" :data="data" @input="changeTextFile($event)"/>
+                <fileUpload :value="form.file" :data="data" @input="changeTextFile($event)"/>
               </el-form-item>
             </el-form>
 
@@ -282,61 +235,19 @@
           </template>
           {{this.$store.getters.studentInfo.classInfo.classname}}
         </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label" >
-            <i class="el-icon-office-building"></i>
-            申请时间
-          </template>
-          {{dialogData.requestTime}}
-        </el-descriptions-item>
-        <el-descriptions-item span="2">
-          <template slot="label" >
-            <i class="el-icon-office-building"></i>
-            出发地
-          </template>
-          {{getCodeToText(dialogData.location)+'-'+dialogData.detailLocation}}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label" >
-            <i class="el-icon-location-outline"></i>
-            交通方式
-          </template>
-          {{toTypeString(dialogData.toType) + '-' +dialogData.toNum}}
-        </el-descriptions-item>
-        <el-descriptions-item span="2">
-          <template slot="label">
-            <i class="el-icon-location-outline"></i>
-            预计到校时间
-          </template>
-          {{dialogData.toTime}}
-        </el-descriptions-item>
         <el-descriptions-item span="3">
           <template slot="label">
             <i class="el-icon-location-outline"></i>
-            行程详细信息
+            个人介绍
           </template>
-          {{dialogData.toDetail}}
+          {{dialogData.detail}}
         </el-descriptions-item>
       </el-descriptions>
-<!--      <div style="margin: 20px 0" v-if="dialogData.imgFile!=='' && dialogData.imgFile!==null">-->
-<!--        <div style="font-size: 16px;font-weight: bold;padding-bottom: 20px">上传图片</div>-->
-<!--        <el-upload-->
-<!--          list-type="picture-card"-->
-<!--          :file-list="getFile(dialogData.imgFile)"-->
-<!--          action=""-->
-<!--          :show-file-list="true"-->
-<!--        />-->
-<!--      </div>-->
-<!--      <div style="margin: 20px 0" v-if="dialogData.textFile!=='' && dialogData.textFile!==null">-->
-<!--        <div style="font-size: 16px;font-weight: bold;padding-bottom: 20px">上传文件</div>-->
-
-<!--      </div>-->
       <div style="margin: 20px 0">
         <div style="font-size: 16px;font-weight: bold;padding-bottom: 20px">审批状态</div>
-        <el-steps :space="600" :active="getActive(dialogData.status)" finish-status="success" :align-center="true" :process-status="'finish'" simple>
+        <el-steps :space="600" :active="dialogData.status === '1'? 1:3" finish-status="success" :align-center="true" :process-status="'finish'" simple>
           <el-step title="提交信息"></el-step>
-          <el-step title="待审批"></el-step>
-          <el-step title="待确定"></el-step>
+          <el-step title="审批中"></el-step>
           <el-step title="审批完成"></el-step>
         </el-steps>
       </div>
@@ -358,22 +269,11 @@
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-mobile-phone"></i>
-            审批时间
-          </template>
-          {{dialogData.checkTime}}
-        </el-descriptions-item>
-        <el-descriptions-item span="3">
-          <template slot="label">
-            <i class="el-icon-tickets"></i>
             审批结果
           </template>
-          <div style="position: relative">
-            <div style="float: left">审批通过</div>
-            <div style="float: right">
-              <el-button type="primary" icon="el-icon-thumb" v-if="dialogData.status === '2'" @click="updateToRequestStatus(dialogData)">确认</el-button>
-              <el-button type="success" icon="el-icon-medal" v-if="dialogData.status === '3' && dialogData.resultType === '1'">通过</el-button>
-              <el-button type="danger" icon="el-icon-warning" v-if="dialogData.status === '3' && dialogData.resultType === '2'">拒绝</el-button>
-            </div>
+          <div >
+            <el-button type="success" icon="el-icon-medal" v-if="this.dialogData.status === '2'">申请通过</el-button>
+            <el-button type="danger" icon="el-icon-warning" v-if="this.dialogData.status === '3'">申请拒绝</el-button>
           </div>
         </el-descriptions-item>
       </el-descriptions>
@@ -383,9 +283,10 @@
 </template>
 
 <script>
-  import { listToRequest, getToRequest, delToRequest, addToRequest, updateToRequest, updateToRequestStatus } from "@/api/student/toRequest";
-  import {regionData, CodeToText} from "element-china-area-data";
-  import {getUser, listUser} from "../../../../api/user";
+  import { listPartTime, getPartTime, delPartTime, addPartTime, updatePartTime, updatePartTimeStatus } from "@/api/student/partTime";
+  import {listNotice} from "../../../../api/admin/notice/notice";
+  import {listUser} from "../../../../api/user";
+
   export default {
     name: "request",
     data() {
@@ -403,7 +304,7 @@
         // 总条数
         total: 0,
         // 报备类别表格数据
-        toRequestList: [],
+        partTimeList: [],
         // 弹出层标题
         title: "",
         // 是否显示弹出层
@@ -412,10 +313,14 @@
         queryParams: {
           pageNum: 1,
           pageSize: 10,
-          orderBy: 'id asc',
           status: null,
-          type: null,
-          studentId: this.$store.getters.studentInfo.id
+          studentId: this.$store.getters.studentInfo.id,
+          noticeId: null
+        },
+        params: {
+          pageNum: 1,
+          endTime: new Date(),
+          noticetype: '3'
         },
         // 表单参数
         form: {},
@@ -428,47 +333,37 @@
               message: '请输入正确的手机号码或者座机号',
             },
           ],
-          toType: [
-            { required: true, message: '请选择交通方式'}
+          detail: [
+            { required: true, message: '请填写详细个人介绍'}
           ],
-          toNum: [
-            { required: true, message: '请填写班次'}
-          ],
-          toTime: [
-            { required: true, message: '请选择预计到达时间'}
-          ],
-          location: [
-            { required: true, message: '请选择出发地'}
-          ],
-          detailLocation: [
-            { required: true, message: '请填写详细地址'}
-          ],
-          toDetail: [
-            { required: true, message: '请填写详细行程信息'}
-          ],
+          noticeId: [
+            { required: true, message: '请选择勤工助学'}
+          ]
         },
         show:false,
         windowWidth: document.documentElement.clientWidth,  //实时屏幕宽度
         windowHeight: document.documentElement.clientHeight,   //实时屏幕高度
         activeName: 'basic',
-        options: regionData,
-        toTypeList: ['','飞机','高铁','火车','私家车'],
         statusOptions: [
           {label:'审批中',value:'1'},
-          {label:'待确认',value:'2'},
-          {label:'审批完成',value:'3'}
+          {label:'已通过',value:'2'},
+          {label:'已拒绝',value:'3'}
         ],
         dialogTableVisible: false,
         dialogData: {},
         data: {
           bucket: 'student'
         },
+        noticeList: [],
         userList: []
       };
     },
     created() {
       listUser({role: 2}).then(res=>{
         this.userList = res.data
+      })
+      listNotice(this.params).then(res=>{
+        this.noticeList = res.rows
       })
       this.getList();
     },
@@ -478,43 +373,13 @@
         handler:"getList"
       }
     },
-    computed: {
-      dateRange: {
-        get(){
-          if(this.form.startTime === undefined || this.form.startTime === null || this.form.startTime === ''){
-            return []
-          }
-          return [this.form.startTime,this.form.endTime]
-        },
-        set(data){
-          if(data !== null){
-            this.$set(this.form,'startTime',data[0])
-            this.$set(this.form,'endTime',data[1])
-          }else {
-            this.$set(this.form,'startTime',null)
-            this.$set(this.form,'endTime',null)
-          }
-        }
-      },
-      selectedOptions: {
-        get(){
-          if(this.form.location === undefined || this.form.location === null || this.form.location === ''){
-            return []
-          }
-          return this.form.location.split(',')
-        },
-        set(data){
-          this.form.location = data.join(',')
-        }
-      }
-    },
     methods: {
       /** 查询报备类别列表 */
       getList() {
         this.loading = true;
-        listToRequest(this.queryParams).then(response => {
+        listPartTime(this.queryParams).then(response => {
           console.log(response)
-          this.toRequestList = response.rows;
+          this.partTimeList = response.rows;
           this.total = response.total;
           this.loading = false;
         });
@@ -531,19 +396,11 @@
           id: null,
           studentId: null,
           phone: null,
-          toType: null,
-          toNum: null,
-          requestTime: null,
-          toTime: null,
-          location: null,
-          detailLocation: null,
-          toDetail: null,
+          noticeId: null,
+          detail: null,
           status: null,
           userId: null,
           file: null,
-          resultType: null,
-          result: null,
-          checkTime: null
         };
         this.resetForm("form");
       },
@@ -552,10 +409,9 @@
         this.queryParams = {
           pageNum: 1,
           pageSize: 10,
-          orderBy: 'id desc',
           status: null,
-          resultType: null,
-          studentId: this.$store.getters.studentInfo.id
+          studentId: this.$store.getters.studentInfo.id,
+          noticeId: null
         };
       },
       /** 重置按钮操作 */
@@ -579,7 +435,7 @@
       handleUpdate(row) {
         this.reset();
         const id = row.id || this.ids
-        getToRequest(id).then(response => {
+        getPartTime(id).then(response => {
           this.form = response.data;
           this.open = true;
           this.show = true;
@@ -592,7 +448,7 @@
             this.form.studentId = this.$store.getters.studentInfo.id
             console.log(this.form)
             if (this.form.id != null) {
-              updateToRequest(this.form).then(response => {
+              updatePartTime(this.form).then(response => {
                 this.msgSuccess("修改成功");
                 this.open = false;
                 this.show = false;
@@ -600,7 +456,7 @@
               });
             } else {
               this.form.status = '1'
-              addToRequest(this.form).then(response => {
+              addPartTime(this.form).then(response => {
                 this.msgSuccess("新增成功");
                 this.open = false;
                 this.show = false;
@@ -618,7 +474,7 @@
           cancelButtonText: "取消",
           type: "warning"
         }).then(function() {
-          return delToRequest(ids);
+          return delPartTime(ids);
         }).then(() => {
           this.getList();
           this.msgSuccess("删除成功");
@@ -627,32 +483,6 @@
       handleHid(){
         this.show = false
         this.open = false
-      },
-      toTypeString (data) {
-        return this.toTypeList[data]
-      },
-      getCodeToText(codeStr) {
-        let codeArray = codeStr.split(",")
-        let area = "";
-        switch (codeArray.length) {
-          case 1:
-            area += CodeToText[codeArray[0]];
-            break;
-          case 2:
-            area += CodeToText[codeArray[0]] + "-" + CodeToText[codeArray[1]];
-            break;
-          case 3:
-            area +=
-              CodeToText[codeArray[0]] +
-              "-" +
-              CodeToText[codeArray[1]] +
-              "-" +
-              CodeToText[codeArray[2]];
-            break;
-          default:
-            break;
-        }
-        return area;
       },
       userString(id){
         if(id === null) return '无'
@@ -673,11 +503,8 @@
         this.dialogTableVisible = true
         this.dialogData = data
       },
-      changeImgFile(fileData){
-        this.form.imgFile = fileData
-      },
       changeTextFile(fileData){
-        this.form.textFile = fileData
+        this.form.file = fileData
       },
       getActive(status){
         if(status === '1') return 1
@@ -687,39 +514,16 @@
       tableRowClassName({row, rowIndex}){
         if(row.status === '1'){
         }else if(row.status === '2'){
-          return 'warning-row'
-        }else if(row.status === '3' && row.resultType === '1'){
           return 'success-row'
-        }else {
+        } else {
           return 'error-row'
         }
       },
-      updateToRequestStatus(data){
-        updateToRequestStatus(data.id,'3').then(res=>{
-          this.msgSuccess('确认成功')
-          this.dialogTableVisible = false
-          this.getList()
-        }).catch(error=>{
-          console.log(error)
-        })
-      }
-      // getFile(file){
-      //   console.log(file)
-      //   // 首先将值转为数组
-      //   const list = Array.isArray(file) ? file : file.split(',');
-      //   let fileList = []
-      //   for(let i=0;i<list.length;i++){
-      //     getName({bucketName:this.data.bucket,fileName:list[i]}).then(res=>{
-      //       let item = {name: res.data.description, url: this.headUrl+this.data.bucket+"/"+list[i], id: list[i]}
-      //       fileList.push(item)
-      //       console.log(fileList)
-      //     })
-      //     if(i === list.length-1){
-      //       return fileList
-      //     }
-      //   }
-      //
-      // }
+      getNoticeName(id){
+        let obj = this.noticeList.find(item=> item.id === id)
+        return obj.title
+      },
+
     }
   };
 </script>
