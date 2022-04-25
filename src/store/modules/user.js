@@ -7,7 +7,8 @@ const user = {
     nickName: '',
     avatar: '',
     roles: [],
-    studentInfo: {}
+    studentInfo: {},
+    userInfo: {},
   },
 
   mutations: {
@@ -28,6 +29,9 @@ const user = {
     },
     SET_STUDENT_INFO: (state, studentInfo) => {
       state.studentInfo = studentInfo
+    },
+    SET_USER_INFO: (state, userInfo) => {
+      state.userInfo = userInfo
     }
   },
 
@@ -56,6 +60,7 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           const user = res.user
+          commit('SET_USER_INFO', user)
           const avatar = user.avatar === "" ? require("@/assets/images/profile.jpg") : user.avatar;
           user.avatar = avatar
           if (user.role) { // 验证返回的roles是否是一个非空数组

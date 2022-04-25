@@ -17,7 +17,7 @@
       :data="data"
     >
       <!-- 上传按钮 -->
-      <el-button size="mini" type="primary">选取文件</el-button>
+      <el-button size="mini" type="primary" v-if="isShowButton">选取文件</el-button>
       <!-- 上传提示 -->
       <div class="el-upload__tip" slot="tip" v-if="showTip">
         请上传
@@ -73,6 +73,11 @@
       },
       // 是否显示提示
       isShowTip: {
+        type: Boolean,
+        default: true
+      },
+      // 是否显示提示
+      isShowButton: {
         type: Boolean,
         default: true
       }

@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="审批状态" prop="staffCatCode">
-        <el-select v-model="queryParams.status" placeholder="请选择">
+        <el-select v-model="queryParams.status" placeholder="请选择" clearable>
           <el-option
             v-for="item in statusOptions"
             :key="item.value"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="报备事由" prop="staffCatCode">
-        <el-select v-model="queryParams.type" placeholder="请选择">
+        <el-select v-model="queryParams.type" placeholder="请选择" clearable>
           <el-option
             v-for="item in typeOptions"
             :key="item.value"
@@ -593,7 +593,7 @@
       submitForm() {
         this.$refs["form"].validate(valid => {
           if (valid) {
-            this.form.studentId = 1
+            this.form.studentId = this.$store.getters.studentInfo.id
             console.log(this.form)
             if (this.form.id != null) {
               updateLeave(this.form).then(response => {
