@@ -173,7 +173,6 @@
 import { listNotice, addNotice, delNotice, updateNotice, getNotice } from '@/api/admin/notice/notice'
 import { mavonEditor } from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-import router from '@/router'
 
 export default {
   name: 'SubSystem',
