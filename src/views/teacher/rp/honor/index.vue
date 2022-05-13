@@ -82,7 +82,7 @@
       <el-table-column label="荣誉称号" align="center" prop="scholarshipName"/>
       <el-table-column label="学号" align="center" prop="studentNo"/>
       <el-table-column label="姓名" align="center" prop="studentName"/>
-      <el-table-column label="辅导员Id" align="center" prop="instructorId"/>
+      <el-table-column label="综合成绩" align="center" prop="totalScore"/>
       <el-table-column label="辅导员姓名" align="center" prop="instructorName"/>
       <el-table-column label="审核状态" align="center" prop="status">
         <template slot-scope="scope">

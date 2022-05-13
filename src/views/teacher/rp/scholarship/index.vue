@@ -39,6 +39,7 @@
 
       <el-form-item>
         <el-button icon="el-icon-refresh" size="medium" @click="resetQuery">重置</el-button>
+<!--        <el-button icon="el-icon-refresh" size="medium" @click="resetTest">测试</el-button>-->
       </el-form-item>
     </el-form>
 
@@ -284,6 +285,17 @@ export default {
       this.queryParams.status = null
       this.queryParams.studentNo = null
       this.handleQuery()
+    },
+    resetTest(){
+      const testA = 10;
+      const testB = 0;
+      const testC = testA || testB
+      if (testA || testB){
+        console.log("hhh")
+      }else {
+        console.log("....")
+      }
+      console.log(testC)
     },
     handleQuery() {
       this.queryParams.pageNum = 1
