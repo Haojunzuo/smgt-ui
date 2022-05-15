@@ -1,8 +1,17 @@
 import request from '@/utils/request'
 
 export function getUser(id) {
+  console.log("getUser:",id)
   return request({
     url: '/user/'+id,
+    method: 'get'
+  })
+}
+
+export function getUser2(id) {
+  console.log("getUser:",id)
+  return request({
+    url: '/user/getUser/'+id,
     method: 'get'
   })
 }
