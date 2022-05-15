@@ -251,6 +251,6 @@ background:#7af8f8;
 color:#2ca29e
 }
 .classTable, .queryClassTable{
-  margin-top: 15px;
+  margin-top: 1px;
 }
 </style>

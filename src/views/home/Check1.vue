@@ -21,8 +21,7 @@
         :i="item.i"
         :key="item.i"
       >
-        <notice v-if="item.name === '公告栏'" :panelSetIcon="true">
-        </notice>
+        <notice v-if="item.name === '公告栏'" :panelSetIcon="true"></notice>
         <quick-operation
           v-if="item.name === '快捷操作'"
           :panelSetIcon="true"

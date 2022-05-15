@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import { getCodeImg } from "@/api/login";
+import { getCodeImg,getInfo } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 
@@ -162,7 +162,12 @@ export default {
           this.loading = false;
           this.$store.dispatch("Login", this.loginForm).then((res) => {
             if(res.token!==undefined){
+              getInfo().then(res=>{
+
+              })
+              console.log("res.token:",res.token)
               this.msgSuccess(res.msg)
+
               this.$router.push({ path: this.redirect || "/" }).catch(()=>{});
             }else {
               this.msgError(res.msg)

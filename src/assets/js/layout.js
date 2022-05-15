@@ -1,13 +1,5 @@
 const initPanelsLayout = [
-  {
-    x: 0,
-    y: 0,
-    w: 5,
-    h: 5,
-    i: 8,
-    name: '个人信息',
-    static: true
-  },
+  { x: 0, y: 0, w: 5, h: 5, i: 8, name: '个人信息', static: true },
   { x: 5, y: 10, w: 12, h: 10, i: 0, name: '公告栏' },
   { x: 0, y: 8, w: 17, h: 13, i: 1, name: '常用应用' },
   { x: 17, y: 8, w: 7, h: 13, i: 6, name: '我的日程' },

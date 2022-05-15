@@ -19,19 +19,19 @@
     <div class="often-control-box">
       <div class="often-control-item">
         <i class="iconfont icon-calendar-check"></i>
-        <span>报备申请</span>
+        <span @click="toLeave">报备申请</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-snippets"></i>
-        <span>进校申请</span>
+        <span @click="toRequest">进校申请</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-meeting"></i>
-        <span>选课</span>
+        <span @click="toSelect">选课</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-bell"></i>
-        <span>学籍确认</span>
+        <span @click="toEnroll">学籍确认</span>
       </div>
 <!--      <div class="often-control-item">-->
 <!--        <i class="iconfont icon-textin"></i>-->
@@ -58,7 +58,19 @@ export default {
     // 删除面板项发送事件
     deletePanelItem () {
       this.$emit('deletePanelItemEvent', this.panelId)
-    }
+    },
+    toLeave(){
+      this.$router.push({path:"/affair/leave"})
+    },
+    toRequest(){
+      this.$router.push({path:"/affair/request"})
+    },
+    toSelect(){
+      this.$router.push({path:"/study/take_course"})
+    },
+    toEnroll(){
+      this.$router.push({path:"/affair/enrollment"})
+    },
   }
 }
 </script>

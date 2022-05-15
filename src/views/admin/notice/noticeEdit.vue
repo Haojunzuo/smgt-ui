@@ -2,9 +2,9 @@
   <div class="app-container">
 
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="公告标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入标题" :disabled="check"/>
-        </el-form-item>
+      <el-form-item label="公告标题" prop="title">
+        <el-input v-model="form.title" placeholder="请输入标题" :disabled="check"/>
+      </el-form-item>
 
       <el-row>
         <el-col :span="spanLength">
@@ -14,13 +14,14 @@
                 v-for="(key,value) in typeMap"
                 :key="value"
                 :label="key"
-                :value="value">
+                :value="value"
+              >
               </el-option>
             </el-select>
           </el-form-item>
         </el-col>
 
-        <el-col :span="spanLength" v-if="form.noticetype === '3'" >
+        <el-col :span="spanLength" v-if="form.noticetype === '3'">
           <el-form-item label="截止时间" prop="endTime" required>
             <el-date-picker
               v-model="form.endTime"
@@ -41,7 +42,8 @@
                 v-for="(key,value) in institutionMap"
                 :key="value"
                 :label="key"
-                :value="value">
+                :value="value"
+              >
               </el-option>
             </el-select>
           </el-form-item>
@@ -58,18 +60,29 @@
       </el-row>
 
       <el-form-item label="公告内容" prop="content">
-        <mavon-editor v-model="form.content"  class="formContent" :editable="!check" :subfield="!check" defaultOpen="preview" :toolbarsFlag="!check" />
+        <mavon-editor v-model="form.content" class="formContent" :editable="!check" :subfield="!check"
+                      defaultOpen="preview" :toolbarsFlag="!check"
+        />
       </el-form-item>
 
     </el-form>
 
-    <div slot="footer" class="dialog-footer">
+    <div slot="footer" class="dialog-footer" v-if="check=='0'">
 
-        <el-button type="success" @click="submitForm" :disabled="check">保存</el-button>
-        <el-button type="primary" @click="createAndPublish" :disabled="check">发布</el-button>
-        <el-button @click="cancel">取 消</el-button>
-<!--      测试findIndex方法-->
-<!--      <el-button @click="test">取 消</el-button>-->
+
+      <el-button type="success" @click="submitForm">保存</el-button>
+      <el-button type="primary" @click="createAndPublish">发布</el-button>
+      <el-button @click="cancel">取 消</el-button>
+      <!--      测试findIndex方法-->
+      <!--      <el-button @click="test">取 消</el-button>-->
+    </div>
+
+    <div slot="footer" class="dialog-footer" v-else>
+
+
+      <el-button @click="cancel">返回</el-button>
+      <!--      测试findIndex方法-->
+      <!--      <el-button @click="test">取 消</el-button>-->
     </div>
 
   </div>
@@ -87,7 +100,7 @@ export default {
   },
   data() {
     return {
-      check:true,
+      check: true,
       total: 0,
       rules: {
         title: [
@@ -108,7 +121,7 @@ export default {
       form: {},
       title: '新增公告',
       open: false,
-      typeMap: { '0': '考务信息', '1': '教学安排', '2': '事务公示' ,'3': '勤工助学'},
+      typeMap: { '0': '考务信息', '1': '教学安排', '2': '事务公示', '3': '勤工助学' },
       urgencyMap: { '0': '一般', '1': '紧急' },
       statusMap: { '0': '草稿', '1': '已发布' },
       institutionMap: { '0': '教务办', '1': '学工办', '2': '党委' },
@@ -125,26 +138,26 @@ export default {
     }
   },
   created() {
-    const noticeId = this.$route.params.noticeId;
-    const check = this.$route.query.check;
-    this.check  = check !== '0'
-    console.log("this.check:",this.check)
-    console.log("noticeId：",noticeId,"check:",check)
-    if (noticeId==='-1'){
+    const noticeId = this.$route.params.noticeId
+    const check = this.$route.query.check
+    this.check = check !== '0'
+    console.log('this.check:', this.check)
+    console.log('noticeId：', noticeId, 'check:', check)
+    if (noticeId === '-1') {
       this.reset()
-    }else{
-      getNotice(noticeId).then(res=>{
+    } else {
+      getNotice(noticeId).then(res => {
         console.log(res)
-        this.form = res.data;
+        this.form = res.data
       })
     }
   },
   watch: {
-    'form.noticetype':{
+    'form.noticetype': {
       handler(news) {
-        if(news === '3') {
+        if (news === '3') {
           this.spanLength = 6
-        }else {
+        } else {
           this.spanLength = 8
         }
       }
@@ -170,8 +183,8 @@ export default {
       this.$router.push(this.$store.state.tagsView.visitedViews[this.$store.state.tagsView.visitedViews.length - 1].path)
     },
     cancel() {
-      this.reset();
-      this.goBack();
+      this.reset()
+      this.goBack()
     },
     createAndPublish() {
       this.form.status = '1'
@@ -183,7 +196,7 @@ export default {
           if (this.form.id != null) {
             updateNotice(this.form).then(response => {
               this.msgSuccess('修改成功')
-              this.goBack();
+              this.goBack()
             })
           } else {
             addNotice(this.form).then(response => {
@@ -193,7 +206,7 @@ export default {
                 this.msgSuccess('已成功发布')
               }
               console.log(response)
-              this.goBack();
+              this.goBack()
             })
           }
         }
@@ -253,7 +266,8 @@ export default {
   margin-top: 20px;
   text-align: center;
 }
-.formContent{
+
+.formContent {
   height: 470px;
 }
 </style>
