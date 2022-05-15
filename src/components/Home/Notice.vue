@@ -44,10 +44,6 @@
 
 
       <el-tab-pane label="考务信息" name="second">
-<!--        <div class="all-box-1">-->
-<!--          <img src="@/assets/images/heu.png" alt="" style="height: 250px; width: 140px"/>-->
-<!--        </div>-->
-        <!-- 内容列表 -->
         <div class="all-box-2">
 
 
@@ -70,10 +66,6 @@
       </el-tab-pane>
 
       <el-tab-pane label="通知公告" name="third">
-<!--        <div class="all-box-1">-->
-<!--          <img src="@/assets/images/heu.png" alt="" style="height: 250px; width: 140px"/>-->
-<!--        </div>-->
-        <!-- 内容列表 -->
         <div class="all-box-2">
 
 
@@ -96,10 +88,6 @@
       </el-tab-pane>
 
       <el-tab-pane label="教学安排" name="forth">
-        <!--        <div class="all-box-1">-->
-        <!--          <img src="@/assets/images/heu.png" alt="" style="height: 250px; width: 140px"/>-->
-        <!--        </div>-->
-        <!-- 内容列表 -->
         <div class="all-box-2">
 
 
