@@ -247,6 +247,7 @@ export default {
     },
     getNoticeList() {
       this.loading = true
+      this.queryParams.noticetype = null
       listNotice(this.queryParams).then(response => {
         this.noticeList = response.rows
         this.total = response.total
