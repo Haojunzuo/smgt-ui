@@ -94,7 +94,7 @@ export default {
         pageNum: 1,
         pageSize: 30,
         semester:"2015-2016-1",
-        classno:this.$store.getters.studentInfo.classNo,
+        classno: this.$store.getters.studentInfo.classNo === undefined?'2015010101':this.$store.getters.studentInfo.classNo,
       },
       loading: false,
       courseLoading: false,

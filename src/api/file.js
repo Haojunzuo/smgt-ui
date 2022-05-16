@@ -21,3 +21,10 @@ export function getName(data) {
     data: data
   })
 }
+export function uploadFile(data) {
+  return request({
+    url: '/file/upload',
+    method: 'post',
+    data: data
+  })
+}

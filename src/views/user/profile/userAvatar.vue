@@ -55,7 +55,8 @@
 <script>
 import store from "@/store";
 import { VueCropper } from "vue-cropper";
-import { uploadAvatar } from "@/api/user";
+import { uploadFile } from "@/api/file";
+import { updateUser } from "../../../api/user";
 
 export default {
   components: { VueCropper },
@@ -123,13 +124,20 @@ export default {
     uploadImg() {
       this.$refs.cropper.getCropBlob(data => {
         let formData = new FormData();
-        formData.append("avatarfile", data);
-        uploadAvatar(formData).then(response => {
-          this.open = false;
-          this.options.img = response.imgUrl;
-          store.commit('SET_AVATAR', this.options.img);
-          this.msgSuccess("修改成功");
-          this.visible = false;
+        formData.append("file", data);
+        formData.append("bucket", 'student');
+        uploadFile(formData).then(response => {
+          let userForm = JSON.parse(JSON.stringify(this.user))
+          userForm.avatar = 'http://150.158.10.136:9000/student/'+response.msg
+          console.log(userForm)
+          updateUser(userForm).then(()=>{
+            this.open = false;
+            this.options.img = 'http://150.158.10.136:9000/student/'+response.msg;
+            store.commit('SET_AVATAR', this.options.img);
+            this.msgSuccess("修改成功");
+            this.visible = false;
+          })
+
         });
       });
     },

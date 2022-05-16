@@ -269,7 +269,6 @@ export default {
   computed: {
     haveTake(){
       const courseList = this.constTakeList
-      console.log(courseList.concat(this.takeList))
       return courseList.concat(this.takeList)
     }
   },

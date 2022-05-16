@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
 
       <el-form-item label="企业" prop="companyNo">
         <el-select v-model="queryParams.companyNo" placeholder="请选择" style="width: 180px">
@@ -56,6 +56,8 @@
         >新增
         </el-button>
       </el-col>
+        <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+
     </el-row>
     <el-table v-loading="loading" :data="jobList">
 
@@ -274,7 +276,7 @@ export default {
       total: 0,
       single: true,
       ids: [],
-      showSearch: false,
+      showSearch: true,
       // 遮罩层
       loading: true,
       // 弹出层标题

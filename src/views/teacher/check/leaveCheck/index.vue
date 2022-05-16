@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="true" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="审批状态">
         <el-select v-model="queryParams.status" placeholder="请选择" clearable>
           <el-option
@@ -36,6 +36,11 @@
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+
+    <el-row :gutter="10" class="mb8">
+      <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
+    </el-row>
+
 
 
     <el-table v-loading="loading" :data="leaveList" @selection-change="handleSelectionChange">
@@ -253,7 +258,7 @@ export default {
       // 非多个禁用
       multiple: true,
       // 显示搜索条件
-      showSearch: false,
+      showSearch: true,
       // 总条数
       total: 0,
       studentList: [],

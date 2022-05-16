@@ -2,6 +2,7 @@
   <div class="login">
     <div class="login-form">
       <h3 class="title">学生跟随系统</h3>
+      <p :style="titleStyle">{{title}}</p>
       <el-menu
         :default-active="'1'"
         class="el-menu-demo"
@@ -67,7 +68,7 @@
 
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2022 哈尔滨工程大学.</span>
+      <span >Copyright © 2022 哈尔滨工程大学.</span>
     </div>
   </div>
 </template>
@@ -76,12 +77,14 @@
 import { getCodeImg,getInfo } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from '@/utils/jsencrypt'
+import store from "../store";
 
 export default {
   name: "Login",
   data() {
     return {
       buttonStyle: "width:100%;background: #2dd074",
+      titleStyle: 'text-align: center;color: #2dd074;font-size: 20px',
       codeUrl: "",
       cookiePassword: "",
       loginForm: {
@@ -106,7 +109,8 @@ export default {
       captchaOnOff: true,
       // 注册开关
       register: false,
-      redirect: undefined
+      redirect: undefined,
+      title: '学生端'
     };
   },
   watch: {
@@ -115,6 +119,18 @@ export default {
         this.redirect = route.query && route.query.redirect;
       },
       immediate: true
+    },
+    loginForm : {
+      deep: true,
+      handler: function () {
+        if(this.loginForm.role === 1){
+          this.title = '学生端'
+        }else if(this.loginForm.role  === 2){
+          this.title = '辅导员端'
+        }else {
+          this.title = '教务端'
+        }
+      }
     }
   },
   created() {
@@ -189,10 +205,13 @@ export default {
       this.loginForm.role = parseInt(data)
       if(data === "1"){
         this.buttonStyle = "width:100%;background: #2dd074";
+        this.titleStyle = "text-align: center;color: #2dd074;font-size: 20px";
       }else if (data === "2") {
         this.buttonStyle = "width:100%;background: #ffbe43";
+        this.titleStyle = "text-align: center;color: #ffbe43;font-size: 20px";
       } else {
         this.buttonStyle = "width:100%;background: #4e84f8";
+        this.titleStyle = "text-align: center;color: #4e84f8;font-size: 20px";
       }
     }
   }
