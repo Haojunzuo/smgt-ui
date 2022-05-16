@@ -16,38 +16,68 @@
       ></i>
     </div>
     <!-- 新建按钮 -->
-    <div class="often-control-box">
+    <div class="often-control-box" v-if="role===1">
       <div class="often-control-item">
         <i class="iconfont icon-calendar-check"></i>
-        <span>报备申请</span>
+        <span @click="toLeave">报备申请</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-snippets"></i>
-        <span>进校申请</span>
+        <span @click="toRequest">进校申请</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-meeting"></i>
-        <span>选课</span>
+        <span @click="toSelect">选课</span>
       </div>
       <div class="often-control-item">
         <i class="iconfont icon-bell"></i>
-        <span>学籍确认</span>
+        <span @click="toEnroll">学籍确认</span>
       </div>
-<!--      <div class="often-control-item">-->
-<!--        <i class="iconfont icon-textin"></i>-->
-<!--        <span>新建收文</span>-->
-<!--      </div>-->
-<!--      <div class="often-control-item">-->
-<!--        <i class="iconfont icon-textout"></i>-->
-<!--        <span>新建发文</span>-->
-<!--      </div>-->
+    </div>
+
+    <div class="often-control-box" v-else-if="role===2">
+      <div class="often-control-item">
+        <i class="iconfont icon-calendar-check"></i>
+        <span @click="toScholarship">评奖审批</span>
+      </div>
+      <div class="often-control-item">
+        <i class="iconfont icon-snippets"></i>
+        <span @click="toHonor">评优审批</span>
+      </div>
+      <div class="often-control-item">
+        <i class="iconfont icon-meeting"></i>
+        <span @click="toPunish">违纪处分</span>
+      </div>
+      <div class="often-control-item">
+        <i class="iconfont icon-bell"></i>
+        <span @click="toLeaveCheck">报备审批</span>
+      </div>
+    </div>
+
+    <div class="often-control-box" v-else-if="role===3">
+      <div class="often-control-item">
+        <i class="iconfont icon-calendar-check"></i>
+        <span @click="toCourse">课程信息</span>
+      </div>
+      <div class="often-control-item">
+        <i class="iconfont icon-snippets"></i>
+        <span @click="toEnrollList">学籍列表</span>
+      </div>
+      <div class="often-control-item">
+        <i class="iconfont icon-meeting"></i>
+        <span @click="toScoreIn">成绩录入</span>
+      </div>
+      <div class="often-control-item">
+        <i class="iconfont icon-bell"></i>
+        <span @click="toNotice">公告信息</span>
+      </div>
     </div>
   </el-card>
 </template>
 
 <script>
 export default {
-  props: ['id', 'panelSetIcon'],
+  props: ['id', 'panelSetIcon', 'role'],
   data () {
     return {
       panelId: this.id,
@@ -58,7 +88,43 @@ export default {
     // 删除面板项发送事件
     deletePanelItem () {
       this.$emit('deletePanelItemEvent', this.panelId)
-    }
+    },
+    toLeave(){
+      this.$router.push({path:"/affair/leave"})
+    },
+    toRequest(){
+      this.$router.push({path:"/affair/request"})
+    },
+    toSelect(){
+      this.$router.push({path:"/study/take_course"})
+    },
+    toEnroll(){
+      this.$router.push({path:"/affair/enrollment"})
+    },
+    toScholarship(){
+      this.$router.push({path:"/rp/scholarshipIns"})
+    },
+    toHonor(){
+      this.$router.push({path:"/rp/honor"})
+    },
+    toPunish(){
+      this.$router.push({path:"/rp/punish"})
+    },
+    toLeaveCheck(){
+      this.$router.push({path:"/check/leaveCheck"})
+    },
+    toCourse(){
+      this.$router.push({path:"/course/info"})
+    },
+    toEnrollList(){
+      this.$router.push({path:"/enrollment/enrollmentInfo"})
+    },
+    toScoreIn(){
+      this.$router.push({path:"/exam/score"})
+    },
+    toNotice(){
+      this.$router.push({path:"/notice/infor"})
+    },
   }
 }
 </script>

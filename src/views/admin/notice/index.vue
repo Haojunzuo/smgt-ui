@@ -61,7 +61,7 @@
           <span>{{ showModel(scope.row, 'institution') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布人" align="center" prop="publisher"/>
+      <el-table-column label="发布人" align="center" prop="user.nickName"/>
       <el-table-column label="发布时间" align="center" prop="noticetime"/>
       <el-table-column label="紧急程度" align="center" prop="urgency">
         <template slot-scope="scope">
@@ -337,16 +337,6 @@ export default {
       })
     },
 
-    // handleCheck(row) {
-    //   const Id = row.id
-    //   this.$router.push({
-    //     path:"/noticeEdit/pro",
-    //     query:{
-    //       noticeId:Id,
-    //       check:'1',
-    //     }
-    //   })
-    // },
     handleDelete(row) {
       const id = row.id || this.ids
       this.$confirm('是否确定编号为' + id + '的数据项?', '警告', {

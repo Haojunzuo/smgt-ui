@@ -93,6 +93,7 @@
       };
     },
     created() {
+      console.log("fileUpload created:","this.value:",this.value,"this.data:",this.data)
       if(this.value){
         let temp = 1;
         // 首先将值转为数组
@@ -100,7 +101,7 @@
         this.fileList = []
         for(let i=0;i<list.length;i++){
           getName({bucketName:this.data.bucket,fileName:list[i]}).then(res=>{
-            console.log(res)
+            // console.log("getName：",res)
             let item = {name: res.data.description, url: this.headUrl+this.data.bucket+"/"+list[i], id: list[i]}
             item.uid = res.uid || new Date().getTime() + temp++;
             this.fileList.push(item)
