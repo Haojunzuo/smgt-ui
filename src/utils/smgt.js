@@ -1,7 +1,4 @@
-﻿/**
- * 通用js方法封装处理
- * Copyright (c) 2019 zhangyp
- */
+﻿
 
 const baseURL = process.env.VUE_APP_BASE_API
 

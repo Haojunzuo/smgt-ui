@@ -6,7 +6,7 @@ import Element from 'element-ui'
 import './assets/styles/element-variables.scss'
 
 import '@/assets/styles/index.scss' // global css
-import '@/assets/styles/anga.scss' // anga css
+import '@/assets/styles/sgmt.scss' // anga css
 import '@/assets/fonts/iconfont.css'
 import App from './App'
 import store from './store'
@@ -16,7 +16,7 @@ import { download } from '@/utils/request'
 
 import './assets/icons' // icon
 import './permission' // permission control
-import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/anga";
+import { parseTime, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/sgmt";
 import Pagination from "@/components/Pagination";
 // 自定义表格工具组件
 import RightToolbar from "@/components/RightToolbar"
